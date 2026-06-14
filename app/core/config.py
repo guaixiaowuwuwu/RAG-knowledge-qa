@@ -16,6 +16,13 @@ class Settings(BaseSettings):
     chunk_size: int = Field(default=800, alias="CHUNK_SIZE")
     chunk_overlap: int = Field(default=120, alias="CHUNK_OVERLAP")
     retrieval_top_k: int = Field(default=4, alias="RETRIEVAL_TOP_K")
+    bm25_corpus_path: Path = Field(default=Path("data/chroma/bm25_corpus.jsonl"), alias="BM25_CORPUS_PATH")
+    dense_retrieval_top_k: int = Field(default=20, alias="DENSE_RETRIEVAL_TOP_K")
+    bm25_retrieval_top_k: int = Field(default=20, alias="BM25_RETRIEVAL_TOP_K")
+    rrf_k: int = Field(default=60, alias="RRF_K")
+    reranker_enabled: bool = Field(default=False, alias="RERANKER_ENABLED")
+    reranker_model: str = Field(default="BAAI/bge-reranker-v2-m3", alias="RERANKER_MODEL")
+    reranker_top_n: int = Field(default=5, alias="RERANKER_TOP_N")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
