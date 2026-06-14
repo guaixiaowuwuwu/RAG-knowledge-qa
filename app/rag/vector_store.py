@@ -1,9 +1,9 @@
 from pathlib import Path
-from uuid import uuid4
 
 import chromadb
 
 from app.ingestion.chunker import Chunk
+from app.rag.documents import chunk_id
 
 
 class ChromaVectorStore:
@@ -28,8 +28,13 @@ class ChromaVectorStore:
 
         texts = [chunk.content for chunk in chunks]
         vectors = self.embeddings.embed_documents(texts)
-        ids = [str(uuid4()) for _ in chunks]
-        metadatas = [chunk.metadata for chunk in chunks]
+        ids = [chunk_id(chunk) for chunk in chunks]
+        metadatas = []
+        for chunk, identity in zip(chunks, ids, strict=False):
+            metadata = dict(chunk.metadata)
+            metadata["chunk_id"] = identity
+            metadata["source"] = chunk.source
+            metadatas.append(metadata)
 
         self.collection.add(ids=ids, documents=texts, embeddings=vectors, metadatas=metadatas)
         return len(chunks)
