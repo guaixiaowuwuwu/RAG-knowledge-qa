@@ -23,6 +23,13 @@
 - `python -m scripts.evaluate` 可运行轻量级检索评估。
 - `python -m scripts.warmup` 可预热本地 embedding 和 reranker 模型。
 
+## 第四阶段能力
+
+- 建立索引时生成父块语料，检索命中子块后返回父块上下文。
+- 支持 Query 改写和 HyDE 查询扩展，默认最多生成 4 个查询变体。
+- 评估脚本输出 Hit Rate@K、MRR@K 和 Source Recall。
+- 前端可以直接运行评估并查看指标。
+
 ## 快速开始
 
 ```bash
@@ -42,6 +49,15 @@ cp .env.example .env
 OPENAI_BASE_URL=https://api.deepseek.com
 CHAT_MODEL=deepseek-v4-pro
 EMBEDDING_MODEL=bge-m3
+```
+
+## 常用命令
+
+```bash
+python -m scripts.ingest
+python -m scripts.evaluate
+python -m scripts.warmup
+uvicorn app.main:app --reload
 ```
 
 ## 建立索引
@@ -74,6 +90,10 @@ curl -N -X POST http://127.0.0.1:8000/ask/stream \
   -d '{"question":"RAG 系统包含哪些核心步骤？","top_k":4}'
 ```
 
+```bash
+curl http://127.0.0.1:8000/evaluation/report
+```
+
 如果 `8000` 端口已被占用，可以换一个端口启动服务：
 
 ```bash
@@ -87,6 +107,10 @@ curl http://127.0.0.1:8001/health
 pytest
 ```
 
+```bash
+node --test tests/js/ui-utils.test.mjs
+```
+
 ## 轻量评估
 
 ```bash
@@ -95,6 +119,7 @@ python -m scripts.evaluate
 ```
 
 评估脚本会复用真实问答检索链路，包括 Chroma 稠密检索、BM25、RRF 和必经 BGE reranker。
+输出包含 `hit_rate_at_k`、`mrr_at_k` 和 `source_recall`。
 
 ## 模型预热
 
@@ -155,4 +180,4 @@ curl http://127.0.0.1:8001/health
 
 ## 后续增强
 
-下一阶段可以加入 RAGAS 评估、Web UI 和更完整的线上监控。
+下一阶段可以加入完整 RAGAS 评估、Milvus/Redis 等生产化基础设施，以及更完整的线上监控。
