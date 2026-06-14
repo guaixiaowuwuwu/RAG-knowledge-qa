@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -51,3 +52,26 @@ class RagService:
             for chunk in chunks
         ]
         return Answer(answer=answer, sources=sources)
+
+    def answer_stream(self, question: str, top_k: int):
+        chunks = self.retriever.similarity_search(question, top_k=top_k)
+        if not chunks:
+            yield {"event": "token", "data": "知识库中没有找到相关内容，无法基于现有资料回答。"}
+            yield {"event": "sources", "data": "[]"}
+            return
+
+        prompt = build_rag_prompt(question, chunks)
+        stream = self.llm.stream(prompt) if hasattr(self.llm, "stream") else [self.llm.complete(prompt)]
+        for token in stream:
+            yield {"event": "token", "data": token}
+
+        sources = [
+            {
+                "source": chunk.source,
+                "page": chunk.metadata.get("page"),
+                "chunk_index": chunk.metadata.get("chunk_index"),
+                "content": chunk.content,
+            }
+            for chunk in chunks
+        ]
+        yield {"event": "sources", "data": json.dumps(sources, ensure_ascii=False)}

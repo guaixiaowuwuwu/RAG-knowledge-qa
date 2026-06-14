@@ -9,6 +9,11 @@ class Reranker(Protocol):
         ...
 
 
+class NoopReranker:
+    def rerank(self, query: str, documents: list[RetrievedDocument], top_n: int) -> list[RetrievedDocument]:
+        return documents[:top_n]
+
+
 class ScoreBasedReranker:
     def __init__(self, model):
         self.model = model
@@ -43,8 +48,15 @@ def build_bge_reranker(model_name: str):
         from FlagEmbedding import FlagReranker
     except ImportError as exc:
         raise RuntimeError(
-            "BGE reranking is required and needs FlagEmbedding. "
+            "RERANKER_ENABLED=true requires FlagEmbedding. "
             "Install it separately with `pip install FlagEmbedding`."
         ) from exc
 
     return ScoreBasedReranker(FlagReranker(model_name, use_fp16=True))
+
+
+def build_reranker(enabled: bool, model_name: str):
+    if not enabled:
+        return NoopReranker()
+
+    return build_bge_reranker(model_name)

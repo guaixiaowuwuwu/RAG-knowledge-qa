@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from sse_starlette.sse import EventSourceResponse
 
 from app.api.schemas import AskRequest, AskResponse, IngestResponse, SourceResponse
 from app.core.config import get_settings
@@ -7,7 +8,7 @@ from app.rag.bm25 import BM25Retriever
 from app.rag.embeddings import build_embeddings
 from app.rag.hybrid_retriever import HybridRetriever
 from app.rag.llm import OpenAIChatLLM
-from app.rag.reranker import build_bge_reranker
+from app.rag.reranker import build_reranker
 from app.rag.service import RagService
 from app.rag.vector_store import ChromaVectorStore
 
@@ -38,7 +39,7 @@ def build_retriever():
     settings = get_settings()
     dense = build_vector_store()
     sparse = BM25Retriever.from_jsonl(settings.bm25_corpus_path)
-    reranker = build_bge_reranker(settings.reranker_model)
+    reranker = build_reranker(settings.reranker_enabled, settings.reranker_model)
     return HybridRetriever(
         dense_retriever=dense,
         sparse_retriever=sparse,
@@ -94,3 +95,14 @@ def ask(request: AskRequest):
             for source in answer.sources
         ],
     )
+
+
+@router.post("/ask/stream")
+def ask_stream(request: AskRequest):
+    settings = get_settings()
+    service = build_rag_service()
+    events = service.answer_stream(
+        question=request.question,
+        top_k=request.top_k or settings.retrieval_top_k,
+    )
+    return EventSourceResponse(events)

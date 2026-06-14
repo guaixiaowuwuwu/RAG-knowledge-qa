@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     dense_retrieval_top_k: int = Field(default=20, alias="DENSE_RETRIEVAL_TOP_K")
     bm25_retrieval_top_k: int = Field(default=20, alias="BM25_RETRIEVAL_TOP_K")
     rrf_k: int = Field(default=60, alias="RRF_K")
+    reranker_enabled: bool = Field(default=False, alias="RERANKER_ENABLED")
     reranker_model: str = Field(default="BAAI/bge-reranker-v2-m3", alias="RERANKER_MODEL")
     reranker_top_n: int = Field(default=5, alias="RERANKER_TOP_N")
 

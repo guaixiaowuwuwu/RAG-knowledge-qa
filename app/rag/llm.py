@@ -16,3 +16,15 @@ class OpenAIChatLLM:
         )
         content = response.choices[0].message.content
         return content or ""
+
+    def stream(self, prompt: str):
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            stream=True,
+        )
+        for chunk in response:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield delta
