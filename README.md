@@ -1,6 +1,6 @@
 # RAG 知识问答系统
 
-这是一个用于复现面试项目的 RAG 知识问答系统。它支持本地文档导入、分块、向量化、Chroma + BM25 混合检索、RRF 融合、BGE reranker 精排、LLM 回答生成和引用来源返回。
+这是一个用于复现面试项目的 RAG 知识问答系统。它支持本地文档导入、分块、向量化、Chroma + BM25 混合检索、RRF 融合、可选 BGE reranker 精排、LLM 回答生成和引用来源返回。
 
 ## 功能范围
 
@@ -9,9 +9,18 @@
 - 默认使用本地 `bge-m3` embedding 模型。
 - 使用 Chroma 本地向量库和 BM25 关键词检索。
 - 使用 RRF 融合 dense 与 BM25 候选结果。
-- 使用 `BAAI/bge-reranker-v2-m3` 作为必经 reranker 精排模型。
+- 可选使用 `BAAI/bge-reranker-v2-m3` 作为 reranker 精排模型。
 - 使用 FastAPI 提供索引和问答接口。
-- 返回答案和引用片段。
+- 返回答案和引用片段，支持普通 JSON 和 SSE 流式回答。
+
+## 第二阶段能力
+
+- 支持 `docx`、`html`、`htm` 文档解析。
+- 建立索引时会同时生成 Chroma 向量索引和 BM25 JSONL 语料。
+- 问答默认走混合检索：Chroma 稠密检索 + BM25 稀疏检索 + RRF 融合。
+- 可通过 `RERANKER_ENABLED=true` 开启 BGE Reranker 精排。
+- `/ask/stream` 支持 SSE 流式输出。
+- `python -m scripts.evaluate` 可运行轻量级检索评估。
 
 ## 快速开始
 
@@ -24,7 +33,18 @@ cp .env.example .env
 
 编辑 `.env`，填入可用的 `OPENAI_API_KEY`、`OPENAI_BASE_URL` 和 `CHAT_MODEL`。
 
-默认 `EMBEDDING_MODEL=bge-m3`，会在本地通过 `sentence-transformers` 加载 `BAAI/bge-m3` 生成向量，不需要配置 embedding API URL。问答检索链路还会加载 `BAAI/bge-reranker-v2-m3` 进行精排。首次运行会下载模型权重，耗时取决于网络和机器性能。
+默认 `EMBEDDING_MODEL=bge-m3`，会在本地通过 `sentence-transformers` 加载 `BAAI/bge-m3` 生成向量，不需要配置 embedding API URL。首次运行会下载模型权重，耗时取决于网络和机器性能。
+
+默认 `RERANKER_ENABLED=false`，问答链路不会加载 reranker。需要精排时设置：
+
+```bash
+pip install -e ".[reranker]"
+```
+
+```dotenv
+RERANKER_ENABLED=true
+RERANKER_MODEL=BAAI/bge-reranker-v2-m3
+```
 
 如果使用 DeepSeek 做回答生成，可以配置：
 
@@ -58,6 +78,12 @@ curl -X POST http://127.0.0.1:8000/ask \
   -d '{"question":"RAG 系统包含哪些核心步骤？","top_k":4}'
 ```
 
+```bash
+curl -N -X POST http://127.0.0.1:8000/ask/stream \
+  -H "Content-Type: application/json" \
+  -d '{"question":"RAG 系统包含哪些核心步骤？","top_k":4}'
+```
+
 如果 `8000` 端口已被占用，可以换一个端口启动服务：
 
 ```bash
@@ -69,6 +95,13 @@ curl http://127.0.0.1:8001/health
 
 ```bash
 pytest
+```
+
+## 轻量评估
+
+```bash
+python -m scripts.ingest
+python -m scripts.evaluate
 ```
 
 ## 端到端验证
