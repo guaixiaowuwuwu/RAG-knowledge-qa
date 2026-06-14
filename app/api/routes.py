@@ -8,7 +8,7 @@ from app.rag.bm25 import BM25Retriever
 from app.rag.embeddings import build_embeddings
 from app.rag.hybrid_retriever import HybridRetriever
 from app.rag.llm import OpenAIChatLLM
-from app.rag.reranker import build_reranker
+from app.rag.reranker import build_bge_reranker
 from app.rag.service import RagService
 from app.rag.vector_store import ChromaVectorStore
 
@@ -39,7 +39,7 @@ def build_retriever():
     settings = get_settings()
     dense = build_vector_store()
     sparse = BM25Retriever.from_jsonl(settings.bm25_corpus_path)
-    reranker = build_reranker(settings.reranker_enabled, settings.reranker_model)
+    reranker = build_bge_reranker(settings.reranker_model)
     return HybridRetriever(
         dense_retriever=dense,
         sparse_retriever=sparse,

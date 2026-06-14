@@ -2,18 +2,7 @@ import sys
 from types import ModuleType
 
 from app.rag.documents import RetrievedDocument
-from app.rag.reranker import NoopReranker, ScoreBasedReranker, build_bge_reranker, build_reranker
-
-
-def test_noop_reranker_keeps_order_and_trims_top_n():
-    docs = [
-        RetrievedDocument(id="a", content="A", source="a.md", metadata={}),
-        RetrievedDocument(id="b", content="B", source="b.md", metadata={}),
-    ]
-
-    results = NoopReranker().rerank("query", docs, top_n=1)
-
-    assert [doc.id for doc in results] == ["a"]
+from app.rag.reranker import ScoreBasedReranker, build_bge_reranker
 
 
 def test_score_based_reranker_sorts_by_model_score():
@@ -53,9 +42,3 @@ def test_build_bge_reranker_uses_required_model(monkeypatch):
 
     assert isinstance(reranker, ScoreBasedReranker)
     assert created == {"model_name": "BAAI/bge-reranker-v2-m3", "use_fp16": True}
-
-
-def test_build_reranker_defaults_to_noop_when_disabled():
-    reranker = build_reranker(False, "BAAI/bge-reranker-v2-m3")
-
-    assert isinstance(reranker, NoopReranker)
