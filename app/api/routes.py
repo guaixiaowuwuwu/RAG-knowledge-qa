@@ -66,6 +66,9 @@ def ingest():
         chunk_overlap=settings.chunk_overlap,
         reset=True,
         bm25_corpus_path=settings.bm25_corpus_path,
+        parent_corpus_path=settings.parent_corpus_path,
+        parent_chunk_size=settings.parent_chunk_size,
+        parent_chunk_overlap=settings.parent_chunk_overlap,
     )
     return IngestResponse(
         loaded_documents=result.loaded_documents,
