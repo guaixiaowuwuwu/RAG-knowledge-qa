@@ -22,6 +22,13 @@ class Settings(BaseSettings):
     rrf_k: int = Field(default=60, alias="RRF_K")
     reranker_model: str = Field(default="BAAI/bge-reranker-v2-m3", alias="RERANKER_MODEL")
     reranker_top_n: int = Field(default=5, alias="RERANKER_TOP_N")
+    parent_corpus_path: Path = Field(default=Path("data/chroma/parent_corpus.jsonl"), alias="PARENT_CORPUS_PATH")
+    parent_chunk_size: int = Field(default=2048, alias="PARENT_CHUNK_SIZE")
+    parent_chunk_overlap: int = Field(default=160, alias="PARENT_CHUNK_OVERLAP")
+    query_rewrite_enabled: bool = Field(default=True, alias="QUERY_REWRITE_ENABLED")
+    hyde_enabled: bool = Field(default=True, alias="HYDE_ENABLED")
+    max_query_variants: int = Field(default=4, alias="MAX_QUERY_VARIANTS")
+    eval_dataset_path: Path = Field(default=Path("data/eval/sample_eval.jsonl"), alias="EVAL_DATASET_PATH")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
