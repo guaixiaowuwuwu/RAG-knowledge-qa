@@ -561,7 +561,7 @@ git commit -m "feat: add document chunking"
 - Create: `app/rag/service.py`
 - Create: `tests/test_rag_service.py`
 
-- [ ] **Step 1: Write failing RAG service tests**
+- [x] **Step 1: Write failing RAG service tests**
 
 Write `tests/test_rag_service.py`:
 
@@ -635,7 +635,7 @@ pytest tests/test_rag_service.py -v
 
 Expected: FAIL because `app.rag.service` does not exist.
 
-- [ ] **Step 3: Implement prompt builder**
+- [x] **Step 3: Implement prompt builder**
 
 Write `app/rag/__init__.py` as an empty file.
 
@@ -665,7 +665,7 @@ def build_rag_prompt(question: str, chunks: list[Chunk]) -> str:
     )
 ```
 
-- [ ] **Step 4: Implement RAG service**
+- [x] **Step 4: Implement RAG service**
 
 Write `app/rag/service.py`:
 
@@ -725,7 +725,7 @@ class RagService:
         return Answer(answer=answer, sources=sources)
 ```
 
-- [ ] **Step 5: Run RAG service tests and verify pass**
+- [x] **Step 5: Run RAG service tests and verify pass**
 
 Run:
 
@@ -735,7 +735,7 @@ pytest tests/test_rag_service.py -v
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit if repository is initialized**
+- [x] **Step 6: Commit if repository is initialized**
 
 ```bash
 git add app/rag tests/test_rag_service.py
@@ -752,7 +752,7 @@ git commit -m "feat: add rag service"
 - Create: `scripts/__init__.py`
 - Create: `scripts/ingest.py`
 
-- [ ] **Step 1: Implement embedding client**
+- [x] **Step 1: Implement embedding client**
 
 Write `app/rag/embeddings.py`:
 
@@ -777,7 +777,7 @@ class OpenAIEmbeddings:
         return self.embed_documents([text])[0]
 ```
 
-- [ ] **Step 2: Implement LLM client**
+- [x] **Step 2: Implement LLM client**
 
 Write `app/rag/llm.py`:
 
@@ -802,7 +802,7 @@ class OpenAIChatLLM:
         return content or ""
 ```
 
-- [ ] **Step 3: Implement Chroma vector store**
+- [x] **Step 3: Implement Chroma vector store**
 
 Write `app/rag/vector_store.py`:
 
@@ -859,7 +859,7 @@ class ChromaVectorStore:
         return chunks
 ```
 
-- [ ] **Step 4: Implement ingestion pipeline**
+- [x] **Step 4: Implement ingestion pipeline**
 
 Write `app/ingestion/pipeline.py`:
 
@@ -901,7 +901,7 @@ def ingest_directory(
     )
 ```
 
-- [ ] **Step 5: Implement command-line ingestion script**
+- [x] **Step 5: Implement command-line ingestion script**
 
 Write `scripts/__init__.py` as an empty file.
 
@@ -940,7 +940,7 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 6: Run existing tests**
+- [x] **Step 6: Run existing tests**
 
 Run:
 
@@ -966,7 +966,9 @@ IngestResult(loaded_documents=1, indexed_chunks=1, skipped=[], errors={})
 
 The exact `indexed_chunks` value may differ if chunk size creates multiple chunks.
 
-- [ ] **Step 8: Commit if repository is initialized**
+Status: skipped locally because `.env`/`OPENAI_API_KEY` is not configured.
+
+- [x] **Step 8: Commit if repository is initialized**
 
 ```bash
 git add app/ingestion/pipeline.py app/rag/embeddings.py app/rag/llm.py app/rag/vector_store.py scripts
@@ -981,7 +983,7 @@ git commit -m "feat: add vector ingestion pipeline"
 - Create: `app/api/routes.py`
 - Create: `app/main.py`
 
-- [ ] **Step 1: Implement API schemas**
+- [x] **Step 1: Implement API schemas**
 
 Write `app/api/__init__.py` as an empty file.
 
@@ -1015,7 +1017,7 @@ class IngestResponse(BaseModel):
     errors: dict[str, str]
 ```
 
-- [ ] **Step 2: Implement dependency factory and routes**
+- [x] **Step 2: Implement dependency factory and routes**
 
 Write `app/api/routes.py`:
 
@@ -1107,7 +1109,7 @@ def ask(request: AskRequest):
     )
 ```
 
-- [ ] **Step 3: Implement FastAPI app entry point**
+- [x] **Step 3: Implement FastAPI app entry point**
 
 Write `app/main.py`:
 
@@ -1121,7 +1123,7 @@ app = FastAPI(title="RAG Knowledge QA System")
 app.include_router(router)
 ```
 
-- [ ] **Step 4: Verify app imports**
+- [x] **Step 4: Verify app imports**
 
 Run:
 
@@ -1131,7 +1133,7 @@ python -c "from app.main import app; print(app.title)"
 
 Expected: prints `RAG Knowledge QA System`.
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run:
 
@@ -1141,7 +1143,7 @@ pytest -v
 
 Expected: PASS.
 
-- [ ] **Step 6: Manually verify HTTP health endpoint**
+- [x] **Step 6: Manually verify HTTP health endpoint**
 
 Run:
 
@@ -1163,7 +1165,9 @@ Expected:
 
 Stop the server after verification.
 
-- [ ] **Step 7: Commit if repository is initialized**
+Status: verified successfully on `127.0.0.1:8001` because port `8000` was already in use by another process.
+
+- [x] **Step 7: Commit if repository is initialized**
 
 ```bash
 git add app/api app/main.py
