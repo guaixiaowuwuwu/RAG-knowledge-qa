@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RAG Knowledge QA</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">RAG Knowledge QA</p>
+          <h1>企业知识库问答控制台</h1>
+        </div>
+        <div class="status-pill" id="healthStatus">检查中</div>
+      </header>
+
+      <section class="workspace">
+        <aside class="side-panel" aria-label="系统操作">
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>索引</h2>
+              <span id="ingestState">未运行</span>
+            </div>
+            <p class="muted">扫描 <code>data/documents</code>，重建 Chroma 向量索引和 BM25 语料。</p>
+            <button class="primary-button" id="ingestButton" type="button">重建索引</button>
+            <pre class="mini-log" id="ingestLog">等待操作</pre>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>检索链路</h2>
+            </div>
+            <ol class="pipeline-list">
+              <li>Chroma dense retrieval</li>
+              <li>BM25 sparse retrieval</li>
+              <li>RRF fusion</li>
+              <li>BGE reranker</li>
+              <li>LLM answer with citations</li>
+            </ol>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>演示前</h2>
+            </div>
+            <p class="muted">首次加载本地 embedding 和 reranker 会较慢，演示前先在终端运行：</p>
+            <code class="command">python -m scripts.warmup</code>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>评估</h2>
+              <span id="evaluationState">未运行</span>
+            </div>
+            <p class="muted">使用真实检索链路计算 Hit Rate、MRR 和 Source Recall。</p>
+            <button class="secondary-button" id="evaluationButton" type="button">运行评估</button>
+            <div class="metric-grid" id="evaluationMetrics">
+              <span>等待评估</span>
+            </div>
+          </section>
+        </aside>
+
+        <section class="main-panel">
+          <form class="ask-form" id="askForm">
+            <label for="questionInput">问题</label>
+            <textarea id="questionInput" rows="4" placeholder="例如：RAG 系统包含哪些核心步骤？"></textarea>
+
+            <div class="form-row">
+              <label class="compact-label" for="topKInput">Top K</label>
+              <input id="topKInput" type="number" min="1" max="20" value="4" />
+              <button class="primary-button" id="askButton" type="submit">流式提问</button>
+              <button class="secondary-button" id="clearButton" type="button">清空</button>
+            </div>
+          </form>
+
+          <section class="answer-panel" aria-live="polite">
+            <div class="panel-heading">
+              <h2>回答</h2>
+              <span id="answerState">等待问题</span>
+            </div>
+            <div class="answer-output" id="answerOutput">答案会实时显示在这里。</div>
+          </section>
+
+          <section class="sources-panel">
+            <div class="panel-heading">
+              <h2>引用来源</h2>
+              <span id="sourceCount">0 条</span>
+            </div>
+            <div class="sources-list" id="sourcesList">
+              <p class="muted">完成一次问答后显示检索片段、文件路径、页码和 chunk 编号。</p>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/static/app.js"></script>
+  </body>
+</html>

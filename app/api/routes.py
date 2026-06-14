@@ -1,10 +1,13 @@
 from fastapi import APIRouter
 from sse_starlette.sse import EventSourceResponse
 
-from app.api.schemas import AskRequest, AskResponse, IngestResponse, SourceResponse
+from app.api.schemas import AskRequest, AskResponse, EvaluationReportResponse, IngestResponse, SourceResponse
 from app.core.config import get_settings
+from app.evaluation.dataset import load_eval_cases
+from app.evaluation.report import build_retrieval_report
 from app.ingestion.pipeline import ingest_directory
 from app.rag.bm25 import BM25Retriever
+from app.rag.documents import chunk_to_retrieved_document
 from app.rag.embeddings import build_embeddings
 from app.rag.hybrid_retriever import HybridRetriever
 from app.rag.llm import OpenAIChatLLM
@@ -67,9 +70,32 @@ def build_retriever():
     )
 
 
+def build_evaluation_report():
+    settings = get_settings()
+    cases = load_eval_cases(settings.eval_dataset_path)
+    retriever = build_retriever()
+
+    report_cases = []
+    for case in cases:
+        chunks = retriever.similarity_search(case.question, top_k=settings.retrieval_top_k)
+        report_cases.append(
+            {
+                "question": case.question,
+                "expected_sources": case.expected_sources,
+                "retrieved": [chunk_to_retrieved_document(chunk) for chunk in chunks],
+            }
+        )
+    return build_retrieval_report(report_cases)
+
+
 @router.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@router.get("/evaluation/report", response_model=EvaluationReportResponse)
+def evaluation_report():
+    return build_evaluation_report()
 
 
 @router.post("/ingest", response_model=IngestResponse)

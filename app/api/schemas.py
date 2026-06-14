@@ -23,3 +23,22 @@ class IngestResponse(BaseModel):
     indexed_chunks: int
     skipped: list[str]
     errors: dict[str, str]
+
+
+class EvaluationSummaryResponse(BaseModel):
+    cases: int
+    hit_rate_at_k: float
+    mrr_at_k: float
+    source_recall: float
+
+
+class EvaluationCaseResponse(BaseModel):
+    question: str
+    expected_sources: list[str]
+    retrieved_sources: list[str]
+    hit: bool
+
+
+class EvaluationReportResponse(BaseModel):
+    summary: EvaluationSummaryResponse
+    cases: list[EvaluationCaseResponse]
