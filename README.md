@@ -21,6 +21,7 @@
 - 混合检索候选结果会经过 BGE Reranker 精排。
 - `/ask/stream` 支持 SSE 流式输出。
 - `python -m scripts.evaluate` 可运行轻量级检索评估。
+- `python -m scripts.warmup` 可预热本地 embedding 和 reranker 模型。
 
 ## 快速开始
 
@@ -93,6 +94,16 @@ python -m scripts.ingest
 python -m scripts.evaluate
 ```
 
+评估脚本会复用真实问答检索链路，包括 Chroma 稠密检索、BM25、RRF 和必经 BGE reranker。
+
+## 模型预热
+
+本地 embedding 和必经 reranker 首次加载 `BAAI/bge-m3`、`BAAI/bge-reranker-v2-m3` 可能较慢。演示前可以先运行下面的命令，它会构造真实 retriever 并实际触发一次检索和 rerank：
+
+```bash
+python -m scripts.warmup
+```
+
 ## 端到端验证
 
 完成 `.env` 配置并填入真实 chat 模型凭据后，按下面顺序验证完整链路：
@@ -144,4 +155,4 @@ curl http://127.0.0.1:8001/health
 
 ## 后续增强
 
-下一阶段可以加入 RAGAS 评估、SSE 流式输出和 Web UI。
+下一阶段可以加入 RAGAS 评估、Web UI 和更完整的线上监控。
