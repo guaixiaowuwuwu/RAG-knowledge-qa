@@ -8,6 +8,7 @@ from app.rag.bm25 import BM25Retriever
 from app.rag.embeddings import build_embeddings
 from app.rag.hybrid_retriever import HybridRetriever
 from app.rag.llm import OpenAIChatLLM
+from app.rag.parent_store import JsonlParentStore
 from app.rag.reranker import build_bge_reranker
 from app.rag.service import RagService
 from app.rag.vector_store import ChromaVectorStore
@@ -40,6 +41,7 @@ def build_retriever():
     dense = build_vector_store()
     sparse = BM25Retriever.from_jsonl(settings.bm25_corpus_path)
     reranker = build_bge_reranker(settings.reranker_model)
+    parent_store = JsonlParentStore(settings.parent_corpus_path)
     return HybridRetriever(
         dense_retriever=dense,
         sparse_retriever=sparse,
@@ -48,6 +50,7 @@ def build_retriever():
         sparse_top_k=settings.bm25_retrieval_top_k,
         rrf_k=settings.rrf_k,
         reranker_top_n=settings.reranker_top_n,
+        parent_store=parent_store,
     )
 
 

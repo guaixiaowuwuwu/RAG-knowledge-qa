@@ -12,6 +12,7 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
         chroma_collection="test",
         embedding_model="bge-m3",
         bm25_corpus_path=Path("data/chroma/bm25_corpus.jsonl"),
+        parent_corpus_path=Path("data/chroma/parent_corpus.jsonl"),
         reranker_model="BAAI/bge-reranker-v2-m3",
         dense_retrieval_top_k=20,
         bm25_retrieval_top_k=20,
@@ -45,3 +46,4 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
     assert isinstance(retriever, HybridRetriever)
     assert created["reranker_model"] == "BAAI/bge-reranker-v2-m3"
     assert created["corpus_path"] == Path("data/chroma/bm25_corpus.jsonl")
+    assert retriever.parent_store.path == Path("data/chroma/parent_corpus.jsonl")

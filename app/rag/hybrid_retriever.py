@@ -5,6 +5,7 @@ from app.rag.documents import (
     retrieved_document_to_chunk,
 )
 from app.rag.fusion import reciprocal_rank_fusion
+from app.rag.parent_store import JsonlParentStore
 from app.rag.reranker import Reranker
 
 
@@ -18,6 +19,7 @@ class HybridRetriever:
         sparse_top_k: int,
         rrf_k: int,
         reranker_top_n: int,
+        parent_store: JsonlParentStore | None = None,
     ):
         self.dense_retriever = dense_retriever
         self.sparse_retriever = sparse_retriever
@@ -26,6 +28,7 @@ class HybridRetriever:
         self.sparse_top_k = sparse_top_k
         self.rrf_k = rrf_k
         self.reranker_top_n = reranker_top_n
+        self.parent_store = parent_store
 
     def similarity_search(self, query: str, top_k: int):
         dense_chunks = self.dense_retriever.similarity_search(query, top_k=self.dense_top_k)
@@ -37,5 +40,9 @@ class HybridRetriever:
             top_k=max(top_k, self.reranker_top_n),
             k=self.rrf_k,
         )
+        fused_chunks = [retrieved_document_to_chunk(document) for document in fused]
+        if self.parent_store is not None:
+            fused_chunks = self.parent_store.hydrate(fused_chunks)
+        fused = [chunk_to_retrieved_document(chunk) for chunk in fused_chunks]
         reranked = self.reranker.rerank(query, fused, top_n=max(top_k, self.reranker_top_n))
         return [retrieved_document_to_chunk(document) for document in reranked[:top_k]]
