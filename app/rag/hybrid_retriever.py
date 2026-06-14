@@ -6,6 +6,7 @@ from app.rag.documents import (
 )
 from app.rag.fusion import reciprocal_rank_fusion
 from app.rag.parent_store import JsonlParentStore
+from app.rag.query_transform import QueryTransformer
 from app.rag.reranker import Reranker
 
 
@@ -20,6 +21,7 @@ class HybridRetriever:
         rrf_k: int,
         reranker_top_n: int,
         parent_store: JsonlParentStore | None = None,
+        query_transformer: QueryTransformer | None = None,
     ):
         self.dense_retriever = dense_retriever
         self.sparse_retriever = sparse_retriever
@@ -29,14 +31,23 @@ class HybridRetriever:
         self.rrf_k = rrf_k
         self.reranker_top_n = reranker_top_n
         self.parent_store = parent_store
+        self.query_transformer = query_transformer
 
     def similarity_search(self, query: str, top_k: int):
-        dense_chunks = self.dense_retriever.similarity_search(query, top_k=self.dense_top_k)
-        dense_documents = [chunk_to_retrieved_document(chunk) for chunk in dense_chunks]
-        sparse_documents: list[RetrievedDocument] = self.sparse_retriever.search(query, top_k=self.sparse_top_k)
+        queries = self.query_transformer.expand(query) if self.query_transformer is not None else [query]
+
+        ranked_lists = []
+        for expanded_query in queries:
+            dense_chunks = self.dense_retriever.similarity_search(expanded_query, top_k=self.dense_top_k)
+            dense_documents = [chunk_to_retrieved_document(chunk) for chunk in dense_chunks]
+            sparse_documents: list[RetrievedDocument] = self.sparse_retriever.search(
+                expanded_query,
+                top_k=self.sparse_top_k,
+            )
+            ranked_lists.extend([dense_documents, sparse_documents])
 
         fused = reciprocal_rank_fusion(
-            [dense_documents, sparse_documents],
+            ranked_lists,
             top_k=max(top_k, self.reranker_top_n),
             k=self.rrf_k,
         )
