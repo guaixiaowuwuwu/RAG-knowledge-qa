@@ -1179,7 +1179,7 @@ git commit -m "feat: expose rag api"
 **Files:**
 - Modify: `README.md`
 
-- [ ] **Step 1: Run all automated tests**
+- [x] **Step 1: Run all automated tests**
 
 Run:
 
@@ -1202,6 +1202,8 @@ cp .env.example .env
 
 Edit `.env` with real credentials.
 
+Status: virtual environment and dependencies already exist; `.env` is not present locally, so real credentials were not configured.
+
 - [ ] **Step 3: Build the vector index**
 
 Run:
@@ -1212,7 +1214,9 @@ python -m scripts.ingest
 
 Expected: `indexed_chunks` is greater than `0`.
 
-- [ ] **Step 4: Start API server**
+Status: blocked locally by missing `.env`/`OPENAI_API_KEY`; running this would fail before embedding generation.
+
+- [x] **Step 4: Start API server**
 
 Run:
 
@@ -1221,6 +1225,8 @@ uvicorn app.main:app --reload
 ```
 
 Expected: Uvicorn starts on `http://127.0.0.1:8000`.
+
+Status: `8000` was already in use; API server started successfully on `http://127.0.0.1:8001`.
 
 - [ ] **Step 5: Ask a question**
 
@@ -1248,7 +1254,9 @@ Expected:
 }
 ```
 
-- [ ] **Step 6: Update README with any provider-specific note discovered during verification**
+Status: blocked locally by missing `.env`/`OPENAI_API_KEY`; `/ask` requires embeddings and chat completion credentials.
+
+- [x] **Step 6: Update README with any provider-specific note discovered during verification**
 
 If the configured provider does not support `text-embedding-3-small`, update README to state the actual working `EMBEDDING_MODEL` used in `.env`.
 
