@@ -1,16 +1,12 @@
 from app.core.config import get_settings
 from app.ingestion.pipeline import ingest_directory
-from app.rag.embeddings import OpenAIEmbeddings
+from app.rag.embeddings import build_embeddings
 from app.rag.vector_store import ChromaVectorStore
 
 
 def main() -> None:
     settings = get_settings()
-    embeddings = OpenAIEmbeddings(
-        api_key=settings.openai_api_key,
-        base_url=settings.openai_base_url,
-        model=settings.embedding_model,
-    )
+    embeddings = build_embeddings(settings)
     vector_store = ChromaVectorStore(
         persist_dir=settings.chroma_dir,
         collection_name=settings.chroma_collection,

@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.api.schemas import AskRequest, AskResponse, IngestResponse, SourceResponse
 from app.core.config import get_settings
 from app.ingestion.pipeline import ingest_directory
-from app.rag.embeddings import OpenAIEmbeddings
+from app.rag.embeddings import build_embeddings
 from app.rag.llm import OpenAIChatLLM
 from app.rag.service import RagService
 from app.rag.vector_store import ChromaVectorStore
@@ -12,21 +12,12 @@ from app.rag.vector_store import ChromaVectorStore
 router = APIRouter()
 
 
-def build_embeddings():
-    settings = get_settings()
-    return OpenAIEmbeddings(
-        api_key=settings.openai_api_key,
-        base_url=settings.openai_base_url,
-        model=settings.embedding_model,
-    )
-
-
 def build_vector_store():
     settings = get_settings()
     return ChromaVectorStore(
         persist_dir=settings.chroma_dir,
         collection_name=settings.chroma_collection,
-        embeddings=build_embeddings(),
+        embeddings=build_embeddings(settings),
     )
 
 
