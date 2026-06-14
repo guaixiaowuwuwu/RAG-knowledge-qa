@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+*.egg-info/
 .DS_Store
 
 # Local vector database data can be regenerated from source documents.
