@@ -1,13 +1,15 @@
 # RAG 知识问答系统
 
-这是一个用于复现面试项目的第一阶段 RAG 知识问答系统。它支持本地文档导入、分块、向量化、Chroma 检索、LLM 回答生成和引用来源返回。
+这是一个用于复现面试项目的 RAG 知识问答系统。它支持本地文档导入、分块、向量化、Chroma + BM25 混合检索、RRF 融合、BGE reranker 精排、LLM 回答生成和引用来源返回。
 
 ## 功能范围
 
-- 支持 `txt`、`md`、`pdf` 文档。
+- 支持 `txt`、`md`、`pdf`、`docx`、`html` 文档。
 - 使用递归文本分块。
 - 默认使用本地 `bge-m3` embedding 模型。
-- 使用 Chroma 本地向量库。
+- 使用 Chroma 本地向量库和 BM25 关键词检索。
+- 使用 RRF 融合 dense 与 BM25 候选结果。
+- 使用 `BAAI/bge-reranker-v2-m3` 作为必经 reranker 精排模型。
 - 使用 FastAPI 提供索引和问答接口。
 - 返回答案和引用片段。
 
@@ -22,7 +24,7 @@ cp .env.example .env
 
 编辑 `.env`，填入可用的 `OPENAI_API_KEY`、`OPENAI_BASE_URL` 和 `CHAT_MODEL`。
 
-默认 `EMBEDDING_MODEL=bge-m3`，会在本地通过 `sentence-transformers` 加载 `BAAI/bge-m3` 生成向量，不需要配置 embedding API URL。首次运行会下载模型权重，耗时取决于网络和机器性能。
+默认 `EMBEDDING_MODEL=bge-m3`，会在本地通过 `sentence-transformers` 加载 `BAAI/bge-m3` 生成向量，不需要配置 embedding API URL。问答检索链路还会加载 `BAAI/bge-reranker-v2-m3` 进行精排。首次运行会下载模型权重，耗时取决于网络和机器性能。
 
 如果使用 DeepSeek 做回答生成，可以配置：
 
@@ -120,4 +122,4 @@ curl http://127.0.0.1:8001/health
 
 ## 后续增强
 
-下一阶段可以加入 BM25、RRF 融合、Reranker、RAGAS 评估、SSE 流式输出和 Web UI。
+下一阶段可以加入 RAGAS 评估、SSE 流式输出和 Web UI。

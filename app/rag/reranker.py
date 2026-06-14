@@ -1,3 +1,4 @@
+from functools import lru_cache
 from typing import Protocol
 
 from app.rag.documents import RetrievedDocument
@@ -6,11 +7,6 @@ from app.rag.documents import RetrievedDocument
 class Reranker(Protocol):
     def rerank(self, query: str, documents: list[RetrievedDocument], top_n: int) -> list[RetrievedDocument]:
         ...
-
-
-class NoopReranker:
-    def rerank(self, query: str, documents: list[RetrievedDocument], top_n: int) -> list[RetrievedDocument]:
-        return documents[:top_n]
 
 
 class ScoreBasedReranker:
@@ -41,15 +37,13 @@ class ScoreBasedReranker:
         return scored[:top_n]
 
 
-def build_reranker(enabled: bool, model_name: str):
-    if not enabled:
-        return NoopReranker()
-
+@lru_cache
+def build_bge_reranker(model_name: str):
     try:
         from FlagEmbedding import FlagReranker
     except ImportError as exc:
         raise RuntimeError(
-            "RERANKER_ENABLED=true requires FlagEmbedding. "
+            "BGE reranking is required and needs FlagEmbedding. "
             "Install it separately with `pip install FlagEmbedding`."
         ) from exc
 
