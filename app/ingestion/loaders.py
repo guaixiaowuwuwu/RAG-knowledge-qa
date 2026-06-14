@@ -1,10 +1,12 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from bs4 import BeautifulSoup
+from docx import Document as DocxDocument
 from pypdf import PdfReader
 
 
-SUPPORTED_SUFFIXES = {".txt", ".md", ".pdf"}
+SUPPORTED_SUFFIXES = {".txt", ".md", ".pdf", ".docx", ".html", ".htm"}
 
 
 @dataclass(frozen=True)
@@ -34,6 +36,12 @@ def load_document(path: Path) -> list[LoadedDocument]:
                 metadata={"file_type": suffix},
             )
         ]
+
+    if suffix == ".docx":
+        return _load_docx(path)
+
+    if suffix in {".html", ".htm"}:
+        return _load_html(path)
 
     return _load_pdf(path)
 
@@ -76,3 +84,36 @@ def _load_pdf(path: Path) -> list[LoadedDocument]:
         )
 
     return documents
+
+
+def _load_docx(path: Path) -> list[LoadedDocument]:
+    doc = DocxDocument(str(path))
+    paragraphs = [paragraph.text.strip() for paragraph in doc.paragraphs if paragraph.text.strip()]
+    text = "\n\n".join(paragraphs)
+    if not text:
+        return []
+    return [
+        LoadedDocument(
+            text=text,
+            source=str(path),
+            metadata={"file_type": ".docx"},
+        )
+    ]
+
+
+def _load_html(path: Path) -> list[LoadedDocument]:
+    soup = BeautifulSoup(path.read_text(encoding="utf-8"), "html.parser")
+    for element in soup(["script", "style", "noscript"]):
+        element.decompose()
+    text = soup.get_text(separator="\n")
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    normalized = "\n".join(lines)
+    if not normalized:
+        return []
+    return [
+        LoadedDocument(
+            text=normalized,
+            source=str(path),
+            metadata={"file_type": path.suffix.lower()},
+        )
+    ]
