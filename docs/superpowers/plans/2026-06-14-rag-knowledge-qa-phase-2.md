@@ -6,7 +6,7 @@
 
 **Architecture:** Keep the current FastAPI + Chroma + local BGE embedding MVP intact, then add retrieval components behind narrow interfaces. Ingestion will preserve a plain-text corpus for BM25, retrieval will combine dense Chroma results and BM25 results through RRF, reranking will be a required step in the retrieval chain, and evaluation/streaming will sit at the service/API edge without rewriting the ingestion pipeline.
 
-**Tech Stack:** Python 3.11, FastAPI, Chroma, sentence-transformers, transformers 4.x, rank-bm25, jieba, python-docx, beautifulsoup4, sse-starlette, pytest, FlagEmbedding, optional ragas/datasets for heavier evaluation.
+**Tech Stack:** Python 3.11, FastAPI, Chroma, sentence-transformers, transformers 4.x, rank-bm25, jieba, python-docx, beautifulsoup4, sse-starlette, pytest, FlagEmbedding, and Phase 7 onward required RAGAS/datasets for answer-level automated evaluation.
 
 ---
 

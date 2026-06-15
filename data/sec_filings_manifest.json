@@ -1,0 +1,67 @@
+[
+  {
+    "ticker": "AAPL",
+    "company_name": "Apple Inc.",
+    "cik": 320193,
+    "form": "10-K",
+    "accession_number": "0000320193-25-000079",
+    "primary_document": "aapl-20250927.htm",
+    "filing_date": "2025-10-31",
+    "report_date": "2025-09-27",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+    "local_path": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+    "downloaded": true
+  },
+  {
+    "ticker": "MSFT",
+    "company_name": "MICROSOFT CORP",
+    "cik": 789019,
+    "form": "10-K",
+    "accession_number": "0000950170-25-100235",
+    "primary_document": "msft-20250630.htm",
+    "filing_date": "2025-07-30",
+    "report_date": "2025-06-30",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/789019/000095017025100235/msft-20250630.htm",
+    "local_path": "data/documents/sec_filings/MSFT/MSFT_10-K_2025-07-30_0000950170-25-100235.htm",
+    "downloaded": true
+  },
+  {
+    "ticker": "NVDA",
+    "company_name": "NVIDIA CORP",
+    "cik": 1045810,
+    "form": "10-K",
+    "accession_number": "0001045810-26-000021",
+    "primary_document": "nvda-20260125.htm",
+    "filing_date": "2026-02-25",
+    "report_date": "2026-01-25",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000021/nvda-20260125.htm",
+    "local_path": "data/documents/sec_filings/NVDA/NVDA_10-K_2026-02-25_0001045810-26-000021.htm",
+    "downloaded": true
+  },
+  {
+    "ticker": "AMZN",
+    "company_name": "AMAZON COM INC",
+    "cik": 1018724,
+    "form": "10-K",
+    "accession_number": "0001018724-26-000004",
+    "primary_document": "amzn-20251231.htm",
+    "filing_date": "2026-02-06",
+    "report_date": "2025-12-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
+    "local_path": "data/documents/sec_filings/AMZN/AMZN_10-K_2026-02-06_0001018724-26-000004.htm",
+    "downloaded": true
+  },
+  {
+    "ticker": "GOOGL",
+    "company_name": "Alphabet Inc.",
+    "cik": 1652044,
+    "form": "10-K",
+    "accession_number": "0001652044-26-000018",
+    "primary_document": "goog-20251231.htm",
+    "filing_date": "2026-02-05",
+    "report_date": "2025-12-31",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm",
+    "local_path": "data/documents/sec_filings/GOOGL/GOOGL_10-K_2026-02-05_0001652044-26-000018.htm",
+    "downloaded": true
+  }
+]

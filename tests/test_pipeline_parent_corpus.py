@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from app.ingestion.pipeline import ingest_directory
+from app.rag.documents import chunk_id
 
 
 class FakeVectorStore:
@@ -43,3 +44,26 @@ def test_ingest_directory_persists_parent_corpus(tmp_path: Path):
     assert parent_path.exists()
     assert bm25_path.exists()
     assert all("parent_id" in chunk.metadata for chunk in vector_store.chunks)
+
+
+def test_parent_child_chunk_ids_include_parent_identity():
+    first = type(
+        "ChunkLike",
+        (),
+        {
+            "source": "report.pdf",
+            "content": "重复页眉",
+            "metadata": {"chunk_index": 0, "parent_id": "parent-a"},
+        },
+    )()
+    second = type(
+        "ChunkLike",
+        (),
+        {
+            "source": "report.pdf",
+            "content": "重复页眉",
+            "metadata": {"chunk_index": 0, "parent_id": "parent-b"},
+        },
+    )()
+
+    assert chunk_id(first) != chunk_id(second)

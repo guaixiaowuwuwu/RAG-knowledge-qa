@@ -36,11 +36,17 @@ class LocalSentenceTransformerEmbeddings:
 
         self.model_name = LOCAL_EMBEDDING_MODELS.get(model_name, model_name)
         self.model = SentenceTransformer(self.model_name)
+        self.batch_size = 32
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
-        vectors = self.model.encode(texts, normalize_embeddings=True)
+        vectors = self.model.encode(
+            texts,
+            normalize_embeddings=True,
+            batch_size=self.batch_size,
+            show_progress_bar=len(texts) >= 32,
+        )
         return vectors.tolist()
 
     def embed_query(self, text: str) -> list[float]:

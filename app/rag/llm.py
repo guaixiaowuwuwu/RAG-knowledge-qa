@@ -2,10 +2,10 @@ from openai import OpenAI
 
 
 class OpenAIChatLLM:
-    def __init__(self, api_key: str, base_url: str, model: str):
+    def __init__(self, api_key: str, base_url: str, model: str, timeout_seconds: float | None = None):
         if not api_key:
             raise ValueError("OPENAI_API_KEY is required for chat completion")
-        self.client = OpenAI(api_key=api_key, base_url=base_url)
+        self.client = OpenAI(api_key=api_key, base_url=base_url, timeout=timeout_seconds)
         self.model = model
 
     def complete(self, prompt: str) -> str:

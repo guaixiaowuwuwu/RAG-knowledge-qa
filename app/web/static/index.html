@@ -4,9 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>RAG Knowledge QA</title>
+    <meta
+      name="description"
+      content="Local RAG knowledge-base demo console with ingestion, evaluation, streaming answers, citations, and retrieval traces."
+    />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#qaWorkspace">跳到问答区</a>
     <main class="app-shell">
       <header class="topbar">
         <div>
@@ -18,6 +23,17 @@
 
       <section class="workspace">
         <aside class="side-panel" aria-label="系统操作">
+          <section class="panel corpus-panel">
+            <div class="panel-heading">
+              <h2>语料状态</h2>
+              <span id="corpusState">加载中</span>
+            </div>
+            <div class="status-grid" id="corpusStatusGrid">
+              <span class="state-placeholder">正在读取本地索引状态</span>
+            </div>
+            <div class="report-meta" id="corpusStatusMeta"></div>
+          </section>
+
           <section class="panel">
             <div class="panel-heading">
               <h2>索引</h2>
@@ -59,12 +75,27 @@
             <div class="metric-grid" id="evaluationMetrics">
               <span>等待评估</span>
             </div>
+            <div class="report-meta" id="evaluationReportMeta"></div>
+          </section>
+
+          <section class="panel ragas-panel">
+            <div class="panel-heading">
+              <h2>RAGAS 分数</h2>
+              <span id="ragasState">未加载</span>
+            </div>
+            <p class="muted">展示最新答案级评估报告中的 faithfulness、answer relevancy、context precision 和 context recall。</p>
+            <button class="secondary-button" id="ragasButton" type="button">刷新分数</button>
+            <div class="metric-grid ragas-metrics" id="ragasMetrics">
+              <span>等待报告</span>
+            </div>
+            <div class="report-meta" id="ragasReportMeta"></div>
           </section>
         </aside>
 
-        <section class="main-panel">
+        <section class="main-panel" id="qaWorkspace">
           <form class="ask-form" id="askForm">
             <label for="questionInput">问题</label>
+            <div class="preset-strip" id="presetQuestions" aria-label="示例问题"></div>
             <textarea id="questionInput" rows="4" placeholder="例如：RAG 系统包含哪些核心步骤？"></textarea>
 
             <div class="form-row">
@@ -72,6 +103,12 @@
               <input id="topKInput" type="number" min="1" max="20" value="4" />
               <button class="primary-button" id="askButton" type="submit">流式提问</button>
               <button class="secondary-button" id="clearButton" type="button">清空</button>
+            </div>
+
+            <div class="retrieval-controls" aria-label="检索调试开关">
+              <label><input id="rewriteToggle" type="checkbox" checked /> Query Rewrite</label>
+              <label><input id="hydeToggle" type="checkbox" checked /> HyDE</label>
+              <label><input id="parentToggle" type="checkbox" checked /> Parent Hydration</label>
             </div>
           </form>
 
@@ -92,10 +129,33 @@
               <p class="muted">完成一次问答后显示检索片段、文件路径、页码和 chunk 编号。</p>
             </div>
           </section>
+
+          <section class="report-panel">
+            <div class="panel-heading">
+              <h2>评估报告</h2>
+              <span id="reportState">等待评估</span>
+            </div>
+            <div class="comparison-table-wrap" id="comparisonReport">
+              <p class="muted">运行评估或刷新页面后展示最新检索对比报告。</p>
+            </div>
+            <div class="case-list" id="evaluationCases">
+              <p class="muted">评估完成后展示样本级命中、漏召回和负例拒答情况。</p>
+            </div>
+          </section>
+
+          <details class="debug-panel" id="debugPanel">
+            <summary>
+              <span>检索调试</span>
+              <small id="debugState">等待 trace</small>
+            </summary>
+            <div class="debug-content" id="debugContent">
+              <p class="muted">开启一次流式提问后显示 query variants、候选来源、RRF 和 reranker 分数。</p>
+            </div>
+          </details>
         </section>
       </section>
     </main>
 
-    <script type="module" src="/static/app.js"></script>
+    <script type="module" src="/static/app.js?v=phase10"></script>
   </body>
 </html>

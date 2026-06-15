@@ -24,6 +24,7 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
         query_rewrite_enabled=True,
         hyde_enabled=True,
         max_query_variants=4,
+        query_transform_timeout_seconds=8.0,
     )
 
     class FakeDenseRetriever:
@@ -63,3 +64,4 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
     assert created["llm"] == ("test-key", "https://example.com/v1", "test-chat")
     assert retriever.parent_store.path == Path("data/chroma/parent_corpus.jsonl")
     assert retriever.query_transformer.max_variants == 4
+    assert retriever.query_transformer.timeout_seconds == 8.0

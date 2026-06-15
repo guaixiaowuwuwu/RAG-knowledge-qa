@@ -27,3 +27,24 @@ def test_chunk_to_retrieved_document_sets_identity():
     assert doc.source == "data/documents/example.md"
     assert doc.metadata["page"] == 2
     assert doc.score == 0.42
+
+
+def test_chunk_id_includes_structural_metadata():
+    first = Chunk(
+        content="same visible text",
+        source="report.pdf",
+        metadata={"chunk_index": 0, "page": 1, "content_type": "text"},
+    )
+    second = Chunk(
+        content="same visible text",
+        source="report.pdf",
+        metadata={"chunk_index": 0, "page": 2, "content_type": "text"},
+    )
+    table = Chunk(
+        content="same visible text",
+        source="report.pdf",
+        metadata={"chunk_index": 0, "page": 1, "content_type": "table", "table_index": 0},
+    )
+
+    assert chunk_id(first) != chunk_id(second)
+    assert chunk_id(first) != chunk_id(table)

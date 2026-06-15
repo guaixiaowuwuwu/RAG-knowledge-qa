@@ -40,7 +40,7 @@ def chunk_documents(
         if not document.text.strip():
             continue
 
-        parts = splitter.split_text(document.text)
+        parts = _split_document_text(document, splitter, chunk_size)
         for index, part in enumerate(parts):
             content = part.strip()
             if not content:
@@ -77,7 +77,7 @@ def chunk_documents_with_parents(
         if not document.text.strip():
             continue
 
-        parent_parts = parent_splitter.split_text(document.text)
+        parent_parts = _split_document_text(document, parent_splitter, parent_chunk_size)
         for parent_index, parent_part in enumerate(parent_parts):
             parent_content = parent_part.strip()
             if not parent_content:
@@ -90,7 +90,8 @@ def chunk_documents_with_parents(
             parent_metadata["parent_id"] = identity
             parents.append(Chunk(content=parent_content, source=document.source, metadata=parent_metadata))
 
-            child_parts = child_splitter.split_text(parent_content)
+            child_document = LoadedDocument(text=parent_content, source=document.source, metadata=document.metadata)
+            child_parts = _split_document_text(child_document, child_splitter, child_chunk_size)
             for child_index, child_part in enumerate(child_parts):
                 child_content = child_part.strip()
                 if not child_content:
@@ -102,3 +103,33 @@ def chunk_documents_with_parents(
                 children.append(Chunk(content=child_content, source=document.source, metadata=child_metadata))
 
     return ParentChildChunks(parents=parents, children=children)
+
+
+def _split_document_text(document: LoadedDocument, splitter: RecursiveCharacterTextSplitter, chunk_size: int) -> list[str]:
+    if document.metadata.get("content_type") == "table":
+        return split_markdown_table(document.text, chunk_size=chunk_size)
+    return splitter.split_text(document.text)
+
+
+def split_markdown_table(markdown: str, chunk_size: int) -> list[str]:
+    lines = [line.strip() for line in markdown.splitlines() if line.strip()]
+    if len(lines) <= 2 or len(markdown) <= chunk_size:
+        return [markdown]
+
+    header = lines[:2]
+    rows = lines[2:]
+    chunks: list[str] = []
+    current = header.copy()
+
+    for row in rows:
+        candidate = current + [row]
+        if len("\n".join(candidate)) > chunk_size and len(current) > len(header):
+            chunks.append("\n".join(current))
+            current = header + [row]
+        else:
+            current = candidate
+
+    if len(current) > len(header):
+        chunks.append("\n".join(current))
+
+    return chunks or [markdown]

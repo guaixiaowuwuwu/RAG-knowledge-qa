@@ -1,18 +1,39 @@
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
+
+
 class QueryTransformer:
-    def __init__(self, llm, rewrite_enabled: bool, hyde_enabled: bool, max_variants: int):
+    def __init__(
+        self,
+        llm,
+        rewrite_enabled: bool,
+        hyde_enabled: bool,
+        max_variants: int,
+        timeout_seconds: float | None = None,
+    ):
         self.llm = llm
         self.rewrite_enabled = rewrite_enabled
         self.hyde_enabled = hyde_enabled
         self.max_variants = max(1, max_variants)
+        self.timeout_seconds = timeout_seconds
 
-    def expand(self, query: str) -> list[str]:
+    def expand(
+        self,
+        query: str,
+        *,
+        rewrite_enabled: bool | None = None,
+        hyde_enabled: bool | None = None,
+        max_variants: int | None = None,
+    ) -> list[str]:
+        rewrite = self.rewrite_enabled if rewrite_enabled is None else rewrite_enabled
+        hyde = self.hyde_enabled if hyde_enabled is None else hyde_enabled
+        variant_limit = max(1, max_variants or self.max_variants)
         variants = [query]
 
-        if self.rewrite_enabled and len(variants) < self.max_variants:
-            variants.extend(self._rewrite(query))
+        if rewrite and len(variants) < variant_limit:
+            variants.extend(self._safe_transform(lambda: self._rewrite(query)))
 
-        if self.hyde_enabled and len(variants) < self.max_variants:
-            variants.append(self._hyde(query))
+        if hyde and len(variants) < variant_limit:
+            variants.extend(self._safe_transform(lambda: [self._hyde(query)]))
 
         cleaned: list[str] = []
         seen: set[str] = set()
@@ -22,9 +43,23 @@ class QueryTransformer:
                 continue
             seen.add(normalized)
             cleaned.append(normalized)
-            if len(cleaned) >= self.max_variants:
+            if len(cleaned) >= variant_limit:
                 break
-        return cleaned
+        return cleaned or [query]
+
+    def _safe_transform(self, transform) -> list[str]:
+        try:
+            if self.timeout_seconds is None or self.timeout_seconds <= 0:
+                return transform()
+
+            executor = ThreadPoolExecutor(max_workers=1)
+            try:
+                future = executor.submit(transform)
+                return future.result(timeout=self.timeout_seconds)
+            finally:
+                executor.shutdown(wait=False, cancel_futures=True)
+        except (Exception, TimeoutError):
+            return []
 
     def _rewrite(self, query: str) -> list[str]:
         prompt = (

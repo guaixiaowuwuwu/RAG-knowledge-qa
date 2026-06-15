@@ -1,0 +1,45 @@
+services:
+  api:
+    build: .
+    image: rag-knowledge-qa:local
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DOCUMENTS_DIR: /app/data/documents
+      CHROMA_DIR: /app/data/chroma
+      BM25_CORPUS_PATH: /app/data/chroma/bm25_corpus.jsonl
+      PARENT_CORPUS_PATH: /app/data/chroma/parent_corpus.jsonl
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./data/documents:/app/data/documents
+      - ./data/chroma:/app/data/chroma
+      - ./reports:/app/reports
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["redis"]
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  qdrant:
+    image: qdrant/qdrant:v1.9.5
+    profiles: ["qdrant"]
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+volumes:
+  redis-data:
+  qdrant-data:

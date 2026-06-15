@@ -1,0 +1,152 @@
+{
+  "dataset_path": "data/eval/sample_eval.jsonl",
+  "top_k": 4,
+  "config": {
+    "embedding_model": "bge-m3",
+    "chat_model": "deepseek-v4-pro",
+    "ragas_judge_source": "business_qa_openai_config",
+    "ragas_embedding_model": "bge-m3",
+    "chroma_dir": "data/chroma",
+    "chroma_collection": "rag_knowledge_base",
+    "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+    "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+    "dense_retrieval_top_k": 20,
+    "bm25_retrieval_top_k": 20,
+    "rrf_k": 60,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_top_n": 5,
+    "parent_chunk_size": 2048,
+    "parent_chunk_overlap": 160,
+    "query_rewrite_enabled": true,
+    "hyde_enabled": true,
+    "max_query_variants": 4,
+    "answer_eval_generated_at": "2026-06-15T00:24:29.717821"
+  },
+  "summary": {
+    "cases": 1,
+    "pass_rate": 0.0,
+    "average_keyword_coverage": 0.3333333333333333,
+    "citation_rate": 1.0,
+    "unknown_answer_rate": 0.0,
+    "negative_case_pass_rate": 0.0
+  },
+  "records": [
+    {
+      "id": "byd_2024_revenue_total",
+      "question": "比亚迪 2024 年年度报告披露的营业额是多少？",
+      "ground_truth": "比亚迪 2024 年营业额约人民币 777,102 百万元，同比增长 29.02%。",
+      "generated_answer": "2024年年度报告披露的营业额为 **777,102,455 千元** [1][2]。",
+      "expected_answer_keywords": [
+        "777,102",
+        "百万元",
+        "29.02%"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 273,
+          "chunk_index": 0,
+          "content": "比亚迪股份有限公司 2024 年年度报告全文 \n273 \n \n十八、其他重要事项（续） \n \n1、分部报告（续） \n（2） 其他信息 \n地区信息 \n营业收入 \n  2024 年   2023 年  \n       \n中国(包括港澳台地区)  555,217,682     442,093,854   \n境外  221,884,773     160,221,500   \n       \n合计  777,102,455    602,315,354   \n \n对外交易收入按客户所处区域统计。 \n \n非流动资产总额 \n  2024 年   2023 年  \n       \n中国(包括港澳台地区)  363,092,866    343,398,654   \n境外  15,341,210    6,753,730   \n       \n合计  378,434,076    350,152,384   \n \n非流动资产按该资产所处区域统计，不包括商誉、其他权益工具投资、其他非流动金融资产、长期应收款和递延\n所得税资产。 \n \n主要客户信息 \n2024 年的营业收入人民币 98,561,168 千元(2023 年：人民币63,387,758 千元)为对某一单个客户的收入。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 228,
+          "chunk_index": 0,
+          "content": "比亚迪股份有限公司 2024 年年度报告全文 \n228 \n \n七、合并财务报表主要项目注释（续） \n44、营业收入和营业成本 \n（1） 营业收入和营业成本情况 \n  2024 年   2023 年  \n  收入   成本   收入   成本  \n           (经重述)  \n             \n主营业务收入  761,135,162    614,031,918     590,468,270    481,196,444  \n其他业务收入  15,967,293    12,014,698     11,847,084    9,202,501  \n             \n合计  777,102,455    626,046,616     602,315,354    490,398,945  \n \n营业收入列示如下： \n  2024 年   2023 年  \n       \n与客户之间合同产生的收入       \n手机部件、组装及其他产品  159,568,013     118,538,732   \n汽车、汽车相关产品及其他产品  617,147,559    483,262,974  \n其他  110,375   283,754   \n  776,825,947     602,085,460   \n       \n租赁收入  276,508    229,894   \n       \n合计  777,102,455    602,315,354   \n \n（2） 营业收入分解信息 \n2024 年 \n报告分部  \n手机部件、组 \n装及其他产品     \n汽车、汽车相关 \n产品及其他产品    其他   合计  \n             \n经营地区             \n中国(包括港澳台地区)  37,503,823    517,409,835    110,375   555,024,033   \n境外  122,064,190    99,737,724    -   221,801,914   \n  -   -        \n  159,568,013    617,147,559    110,375   776,825,947   \n             \n商品转让的时间             \n在某一时点转让  159,248,360    614,622,917      110,375    773,981,652   \n在某一时段内转让   319,653     2,524,642    -       2,844,295   \n             \n  159,568,013     617,147,559      110,375    776,825,947"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 287,
+          "chunk_index": 0,
+          "content": "比亚迪股份有限公司 2024 年年度报告全文 \n287 \n \n十九、公司财务报表主要项目注释（续） \n4、营业收入及成本 \n（1） 营业收入和营业成本情况 \n  2024 年   2023 年  \n  收入   成本   收入   成本  \n             \n主营业务收入  2,963,250   2,927,810    1,705,800     1,692,277   \n其他业务收入  1,317,715   830,495    1,038,156     619,408   \n             \n合计  4,280,965   3,758,305    2,743,956     2,311,685   \n \n营业收入列示如下： \n  2024 年   2023 年  \n       \n与客户之间合同产生的收入       \n汽车、汽车相关产品及其他产品  4,042,775   2,560,748  \n       \n租赁收入  238,190    183,208   \n       \n合计  4,280,965    2,743,956   \n5、投资收益 \n  2024 年   2023 年  \n       \n合并范围内子公司股利  12,950,000   7,940,000  \n按权益法核算的长期股权投资收益  1,271,765   1,160,891  \n投资理财产品与债权投资产生的投资收益  59,606   10,676  \n仍持有的其他权益工具投资的股利收入  25,690   19,545  \n其他非流动金融资产在持有期间取得的投资收益  1,549   2,124  \n处置交易性金融资产或负债的投资收益  200   13,796  \n处置长期股权投资产生的投资收益  -   1,333  \n处置子公司的投资损失  -   (3,976)  \n       \n合计  14,308,810   9,144,389"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_annual_report_cn.pdf",
+          "page": 29,
+          "chunk_index": 0,
+          "content": "比亚迪股份有限公司 2025 年年度报告全文 \n29 \n国家和地区。 \n四、主营业务分析 \n1、概述 \n参见“管理层讨论与分析”中的“二、报告期内公司所处行业情况”相关内容。 \n2、收入与成本 \n（1） 营业收入构成 \n单位：元 \n \n2025 年 2024 年 \n同比增减 \n金额 占营业收入\n比重 金额 占营业收入比重 \n营业收入合计 803,964,958,000.00 100% 777,102,455,000.00 100% 3.46% \n分行业 \n日用电子器件制\n造业 155,236,528,000.00 19.31% 159,608,576,000.00 20.54% -2.74% \n交通运输设备及\n电气制造业 648,645,636,000.00 80.68% 617,381,935,000.00 79.45% 5.06% \n其他 82,794,000.00 0.01% 111,944,000.00 0.01% -26.04% \n分产品 \n手机部件、组装\n及其他产品 155,236,528,000.00 19.31% 159,608,576,000.00 20.54% -2.74% \n汽车、汽车相关\n产品及其他产品 648,645,636,000.00 80.68% 617,381,935,000.00 79.45% 5.06% \n其他 82,794,000.00 0.01% 111,944,000.00 0.01% -26.04% \n分地区 \n中国（包括港澳\n台地区） 493,223,970,000.00 61.35% 555,217,682,000.00 71.45% -11.17% \n境外 310,740,988,000.00 38.65% 221,884,773,000.00 28.55% 40.05% \n分销售模式 \n直销 367,210,862,000.00 45.67% 373,156,016,000.00 48.02% -1.59% \n经销 436,754,096,000.00 54.33% 403,946,439,000.00 51.98% 8.12% \n（2） 占公司营业收入或营业利润 10%以上的行业、产品、地区、销售模式的情况 \n适用 □不适用 \n单位：元 \n 营业收入 营业成本 毛利率 营业收入比上\n年同期增减 \n营业成本比上\n年同期增减 \n毛利率比上\n年同期增减 \n分行业 \n日用电子器件\n制造业 155,236,528,000.00 145,473,989,000.00 6.29% -2.74% -0.56% -2.06% \n交通运输设备\n及电气制造业 648,645,636,000.00 515,762,940,000.00 20.49% 5.06% 7.53% -1.82% \n分产品"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_annual_report_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "answer_eval_generated_at": "2026-06-15T00:24:29.717821"
+      },
+      "metrics": {
+        "keyword_coverage": 0.3333333333333333,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [
+          "777,102"
+        ],
+        "missing_keywords": [
+          "百万元",
+          "29.02%"
+        ]
+      }
+    }
+  ],
+  "ragas": {
+    "enabled": true,
+    "required": true,
+    "metrics": {
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8003461837187071,
+      "context_precision": 0.9166666666361111,
+      "context_recall": 0.0
+    },
+    "metric_names": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall"
+    ],
+    "target_thresholds": {
+      "faithfulness": 0.85,
+      "answer_relevancy": 0.8,
+      "context_precision": 0.75,
+      "context_recall": 0.8
+    },
+    "dataset_schema": [
+      "question",
+      "answer",
+      "contexts",
+      "ground_truth"
+    ],
+    "judge_config": {
+      "base_url": "https://api.deepseek.com",
+      "judge_model": "deepseek-v4-pro",
+      "embedding_model": "bge-m3",
+      "judge_source": "business_qa_openai_config"
+    }
+  }
+}

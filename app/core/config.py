@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
     openai_base_url: str = Field(default="https://api.openai.com/v1", alias="OPENAI_BASE_URL")
     chat_model: str = Field(default="gpt-4o-mini", alias="CHAT_MODEL")
-    embedding_model: str = Field(default="text-embedding-3-small", alias="EMBEDDING_MODEL")
+    embedding_model: str = Field(default="bge-m3", alias="EMBEDDING_MODEL")
     documents_dir: Path = Field(default=Path("data/documents"), alias="DOCUMENTS_DIR")
     chroma_dir: Path = Field(default=Path("data/chroma"), alias="CHROMA_DIR")
     chroma_collection: str = Field(default="rag_knowledge_base", alias="CHROMA_COLLECTION")
@@ -28,7 +28,14 @@ class Settings(BaseSettings):
     query_rewrite_enabled: bool = Field(default=True, alias="QUERY_REWRITE_ENABLED")
     hyde_enabled: bool = Field(default=True, alias="HYDE_ENABLED")
     max_query_variants: int = Field(default=4, alias="MAX_QUERY_VARIANTS")
+    query_transform_timeout_seconds: float = Field(default=8.0, alias="QUERY_TRANSFORM_TIMEOUT_SECONDS")
     eval_dataset_path: Path = Field(default=Path("data/eval/sample_eval.jsonl"), alias="EVAL_DATASET_PATH")
+    max_question_chars: int = Field(default=2000, alias="MAX_QUESTION_CHARS")
+    llm_timeout_seconds: float = Field(default=60.0, alias="LLM_TIMEOUT_SECONDS")
+    answer_cache_enabled: bool = Field(default=False, alias="ANSWER_CACHE_ENABLED")
+    answer_cache_backend: str = Field(default="redis", alias="ANSWER_CACHE_BACKEND")
+    answer_cache_ttl_seconds: int = Field(default=300, alias="ANSWER_CACHE_TTL_SECONDS")
+    redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

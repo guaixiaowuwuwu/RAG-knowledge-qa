@@ -7,6 +7,11 @@ import {
   normalizeSources,
   clampTopK,
   formatPercent,
+  formatInteger,
+  formatBytes,
+  formatDateTime,
+  basename,
+  hitLabel,
 } from "../../app/web/static/ui-utils.js";
 
 test("escapeHtml escapes dangerous characters", () => {
@@ -50,9 +55,36 @@ test("normalizeSources fills missing optional fields", () => {
       source: "data/documents/example.md",
       page: null,
       chunk_index: null,
+      matched_child_chunk_index: null,
+      content_type: null,
+      table_index: null,
       content: "RAG 内容",
     },
   ]);
+});
+
+test("normalizeSources preserves citation metadata", () => {
+  const sources = normalizeSources([
+    {
+      source: "report.pdf",
+      page: 3,
+      chunk_index: 12,
+      matched_child_chunk_index: 2,
+      content_type: "table",
+      table_index: 1,
+      content: "|A|B|",
+    },
+  ]);
+
+  assert.deepEqual(sources[0], {
+    source: "report.pdf",
+    page: 3,
+    chunk_index: 12,
+    matched_child_chunk_index: 2,
+    content_type: "table",
+    table_index: 1,
+    content: "|A|B|",
+  });
 });
 
 test("clampTopK keeps values within API bounds", () => {
@@ -64,4 +96,32 @@ test("clampTopK keeps values within API bounds", () => {
 test("formatPercent formats ratio values", () => {
   assert.equal(formatPercent(1), "100.0%");
   assert.equal(formatPercent(0.825), "82.5%");
+});
+
+test("formatInteger formats finite values", () => {
+  assert.equal(formatInteger(5171), "5,171");
+  assert.equal(formatInteger("bad"), "0");
+});
+
+test("formatBytes uses compact binary units", () => {
+  assert.equal(formatBytes(0), "0 B");
+  assert.equal(formatBytes(1536), "1.5 KB");
+  assert.equal(formatBytes(1048576), "1.0 MB");
+});
+
+test("formatDateTime handles empty and ISO values", () => {
+  assert.equal(formatDateTime(""), "未生成");
+  assert.match(formatDateTime("2026-06-14T15:00:00Z"), /06\/14|06-14|14\/06/);
+});
+
+test("basename extracts file name from source paths", () => {
+  assert.equal(basename("data/documents/sec_filings/AAPL/report.htm"), "report.htm");
+  assert.equal(basename(""), "");
+});
+
+test("hitLabel distinguishes positive and negative cases", () => {
+  assert.equal(hitLabel(true, false), "命中");
+  assert.equal(hitLabel(false, false), "未命中");
+  assert.equal(hitLabel(false, true), "正确拒答");
+  assert.equal(hitLabel(true, true), "误召回");
 });

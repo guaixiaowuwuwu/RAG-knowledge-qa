@@ -14,8 +14,12 @@ class RetrievedDocument:
 
 
 def chunk_id(chunk: Chunk) -> str:
+    content_type = chunk.metadata.get("content_type", "")
+    parent_id = chunk.metadata.get("parent_id", "")
     chunk_index = chunk.metadata.get("chunk_index", "")
-    raw = f"{chunk.source}:{chunk_index}:{chunk.content}"
+    page = chunk.metadata.get("page", "")
+    table_index = chunk.metadata.get("table_index", "")
+    raw = f"{chunk.source}:{content_type}:{parent_id}:{page}:{table_index}:{chunk_index}:{chunk.content}"
     return sha1(raw.encode("utf-8")).hexdigest()
 
 
