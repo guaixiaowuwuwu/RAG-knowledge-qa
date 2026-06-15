@@ -57,7 +57,7 @@ def build_rag_service():
         api_key=settings.openai_api_key,
         base_url=settings.openai_base_url,
         model=settings.chat_model,
-        timeout_seconds=settings.llm_timeout_seconds,
+        timeout_seconds=getattr(settings, "llm_timeout_seconds", 60.0),
     )
     return RagService(retriever=build_retriever(), llm=llm)
 
@@ -72,7 +72,7 @@ def build_retriever():
         api_key=settings.openai_api_key,
         base_url=settings.openai_base_url,
         model=settings.chat_model,
-        timeout_seconds=settings.llm_timeout_seconds,
+        timeout_seconds=getattr(settings, "llm_timeout_seconds", 60.0),
     )
     query_transformer = QueryTransformer(
         llm=transformer_llm,

@@ -465,14 +465,14 @@ curl http://127.0.0.1:8000/health
 
 ### Tasks
 
-- [ ] Write `docs/interview-guide.md`.
+- [x] Write `docs/interview-guide.md`.
   - 1-minute version.
   - 3-minute version.
   - 5-minute version.
   - Architecture walkthrough.
   - What I built personally.
 
-- [ ] Write `docs/tradeoffs.md`.
+- [x] Write `docs/tradeoffs.md`.
   - Why Chroma locally.
   - Why BM25 + dense.
   - Why RRF.
@@ -481,14 +481,14 @@ curl http://127.0.0.1:8000/health
   - Why Query Rewrite/HyDE.
   - When not to use each technique.
 
-- [ ] Write `docs/evaluation.md`.
+- [x] Write `docs/evaluation.md`.
   - Dataset construction.
   - Metrics definitions.
   - Variant comparison table.
   - Failure cases.
   - Next optimization ideas.
 
-- [ ] Add "common interview questions" answers.
+- [x] Add "common interview questions" answers.
   - 分块大小怎么选？
   - 检索效果不好怎么排查？
   - 为什么需要 BM25？
@@ -498,7 +498,7 @@ curl http://127.0.0.1:8000/health
   - 如何部署到生产？
   - 如何控制成本和延迟？
 
-- [ ] Add a final demo script.
+- [x] Add a final demo script.
   - Setup.
   - Ingest BYD corpus.
   - Run evaluation.

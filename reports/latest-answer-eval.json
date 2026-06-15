@@ -1,0 +1,9 @@
+{
+  "kind": "answer-evaluation-pointer",
+  "report_path": "reports/answer-eval-ragas-optimized.json",
+  "dataset_path": "data/eval/sample_eval.jsonl",
+  "top_k": 4,
+  "case_count": 1,
+  "ragas_available": true,
+  "notes": "Pointer to the latest checked-in RAGAS smoke report. The sample count is too small for an overall answer-quality claim."
+}

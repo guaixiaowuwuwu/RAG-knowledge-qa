@@ -40,8 +40,8 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
         pass
 
     class FakeLLM:
-        def __init__(self, api_key: str, base_url: str, model: str):
-            created["llm"] = (api_key, base_url, model)
+        def __init__(self, api_key: str, base_url: str, model: str, timeout_seconds: float | None = None):
+            created["llm"] = (api_key, base_url, model, timeout_seconds)
 
         def complete(self, prompt: str) -> str:
             return ""
@@ -61,7 +61,7 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
     assert isinstance(retriever, HybridRetriever)
     assert created["reranker_model"] == "BAAI/bge-reranker-v2-m3"
     assert created["corpus_path"] == Path("data/chroma/bm25_corpus.jsonl")
-    assert created["llm"] == ("test-key", "https://example.com/v1", "test-chat")
+    assert created["llm"] == ("test-key", "https://example.com/v1", "test-chat", 60.0)
     assert retriever.parent_store.path == Path("data/chroma/parent_corpus.jsonl")
     assert retriever.query_transformer.max_variants == 4
     assert retriever.query_transformer.timeout_seconds == 8.0

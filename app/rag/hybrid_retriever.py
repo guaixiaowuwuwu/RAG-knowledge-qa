@@ -210,6 +210,16 @@ class HybridRetriever:
         }
 
     def _hydrate_with_debug(self, children) -> tuple[list, list[dict]]:
+        if not hasattr(self.parent_store, "get") and hasattr(self.parent_store, "hydrate"):
+            hydrated = self.parent_store.hydrate(children)
+            return hydrated, [
+                {
+                    "status": "hydrated_by_parent_store",
+                    "child_count": len(children),
+                    "hydrated_count": len(hydrated),
+                }
+            ]
+
         hydrated = []
         trace = []
         seen_parent_ids: set[str] = set()
