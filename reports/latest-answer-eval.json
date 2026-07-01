@@ -1,9 +1,9 @@
 {
   "kind": "answer-evaluation-pointer",
-  "report_path": "reports/answer-eval-ragas-optimized.json",
+  "report_path": "reports/answer-eval-20260623-191226.json",
   "dataset_path": "data/eval/sample_eval.jsonl",
   "top_k": 4,
-  "case_count": 1,
+  "case_count": 10,
   "ragas_available": true,
-  "notes": "Pointer to the latest checked-in RAGAS smoke report. The sample count is too small for an overall answer-quality claim."
+  "notes": "Latest runtime-aligned 10-case mixed RAGAS report. It is useful evidence, but still too small for an overall answer-quality claim."
 }

@@ -5,6 +5,8 @@ import time
 from dataclasses import asdict, is_dataclass
 from typing import Protocol
 
+from app.ingestion.index_versions import get_active_index_version
+
 
 logger = logging.getLogger(__name__)
 
@@ -86,18 +88,38 @@ def build_answer_cache(settings) -> AnswerCache:
     return NullAnswerCache()
 
 
-def build_cache_key(question: str, top_k: int, settings, retrieval_options: object | None = None) -> str:
+def build_cache_key(
+    question: str,
+    top_k: int,
+    settings,
+    retrieval_options: object | None = None,
+    context: object | None = None,
+) -> str:
     payload = {
         "question": question.strip(),
         "top_k": top_k,
         "chat_model": getattr(settings, "chat_model", ""),
         "embedding_model": getattr(settings, "embedding_model", ""),
         "chroma_collection": getattr(settings, "chroma_collection", ""),
+        "min_reranker_score": getattr(settings, "min_reranker_score", None),
+        "min_final_source_count": getattr(settings, "min_final_source_count", None),
+        "enable_low_confidence_refusal": getattr(settings, "enable_low_confidence_refusal", None),
+        "time_sensitive_refusal_enabled": getattr(settings, "time_sensitive_refusal_enabled", None),
+        "document_index_version": get_active_index_version(settings),
+        "access": normalize_context(context),
         "retrieval_options": normalize_options(retrieval_options),
     }
     serialized = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     digest = hashlib.sha256(serialized.encode("utf-8")).hexdigest()
     return f"rag-answer:{digest}"
+
+
+def should_use_answer_cache(settings, context: object | None = None) -> bool:
+    if not getattr(settings, "answer_cache_enabled", False):
+        return False
+    if getattr(settings, "auth_enabled", False) and context is None:
+        return False
+    return True
 
 
 def normalize_options(options: object | None) -> dict:
@@ -111,4 +133,15 @@ def normalize_options(options: object | None) -> dict:
         key: value
         for key, value in vars(options).items()
         if not key.startswith("_")
+    }
+
+
+def normalize_context(context: object | None) -> dict:
+    if context is None:
+        return {}
+    user_id = str(getattr(context, "user_id", ""))
+    return {
+        "tenant_id": getattr(context, "tenant_id", None),
+        "user_hash": hashlib.sha256(user_id.encode("utf-8")).hexdigest()[:16] if user_id else None,
+        "permission_version": getattr(context, "permission_version", None),
     }

@@ -30,12 +30,15 @@ docker compose up --build api
 
 ```bash
 curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8000/metrics
 ```
 
 Compose 会把本机目录挂载到容器：
 
 - `./data/documents` -> `/app/data/documents`
 - `./data/chroma` -> `/app/data/chroma`
+- `./data/indexes` -> `/app/data/indexes`
+- `./data/runtime` -> `/app/data/runtime`
 - `./reports` -> `/app/reports`
 
 因此索引和报告会留在仓库目录中，便于本地复现实验。
@@ -58,6 +61,40 @@ REDIS_URL=redis://redis:6379/0
 ```
 
 缓存的是普通 `/ask` 的最终答案和引用，不缓存 `/ask/stream` 的 SSE token 流。缓存 key 由问题文本、`top_k`、chat model、embedding model、Chroma collection 和检索选项组成，避免不同配置共用旧答案。
+
+## 企业微信入口
+
+企业微信自建应用回调入口在 Phase C 中已接入，默认关闭。开启方式、环境变量、后台配置和测试命令见 [企业微信集成说明](wecom-integration.md)。生产或 staging 必须同时开启 `AUTH_ENABLED=true`，并确保用户映射和文档 ACL 已通过测试。
+
+最小 staging 环境变量：
+
+```dotenv
+AUTH_ENABLED=true
+ADMIN_API_KEYS=replace-with-random-admin-key
+DEFAULT_TENANT_ID=default
+PERMISSION_VERSION=staging-perm-v1
+AUDIT_DB_PATH=data/runtime/audit.sqlite3
+DOCUMENTS_MANIFEST_PATH=data/documents_manifest.json
+INDEX_ROOT_DIR=data/indexes
+ACTIVE_INDEX_VERSION_PATH=data/indexes/active_version.txt
+INGESTION_MODE=async
+WECOM_ENABLED=true
+WECOM_CORP_ID=replace-with-corp-id
+WECOM_AGENT_ID=replace-with-agent-id
+WECOM_SECRET=replace-with-secret
+WECOM_TOKEN=replace-with-token
+WECOM_ENCODING_AES_KEY=replace-with-43-char-aes-key
+WECOM_RESPONSE_MODE=active
+```
+
+管理员接口示例：
+
+```bash
+curl -H "x-admin-api-key: $ADMIN_API_KEY" http://127.0.0.1:8000/admin/indexes
+curl -H "x-admin-api-key: $ADMIN_API_KEY" http://127.0.0.1:8000/admin/audit/sessions
+```
+
+不要把这些密钥写入仓库、镜像或前端配置。轮换时先同时接受新旧凭据，验证后移除旧凭据；企业微信后台同步更新 callback token/AES key 后，应立即用无效签名测试确认旧签名被拒绝。
 
 ## 可选向量库服务
 
@@ -89,6 +126,23 @@ Milvus 常见生产权衡：
 docker compose run --rm api python -m scripts.ingest
 ```
 
+异步入库 worker：
+
+```bash
+INGESTION_MODE=async docker compose up --build api worker
+curl -X POST http://127.0.0.1:8000/admin/ingestion/jobs \
+  -H "x-admin-api-key: $ADMIN_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+索引版本目录写入 `data/indexes/<version>/`，active 指针写入 `data/indexes/active_version.txt`。备份至少应覆盖 `data/indexes/`、`data/runtime/audit.sqlite3` 和文档 manifest。回滚示例：
+
+```bash
+curl -X POST http://127.0.0.1:8000/admin/indexes/index-previous/activate \
+  -H "x-admin-api-key: $ADMIN_API_KEY"
+```
+
 运行检索对比：
 
 ```bash
@@ -108,8 +162,27 @@ docker compose run --rm api python -m scripts.benchmark --limit 20 --debug
 生产环境通常还需要：
 
 - 反向代理：Nginx、Ingress 或 API Gateway，负责 TLS、请求体大小、超时和基础限流。
-- 鉴权：接入企业 SSO、API key 或服务间认证。
-- 权限过滤：检索前后都要按用户权限过滤文档和 chunk。
-- 异步入库：文档上传、解析、embedding 和索引构建应进入队列，避免阻塞 API worker。
-- 观测：结构化日志、指标、trace、错误告警和评估报告趋势。
-- 数据治理：索引版本、回滚、删除同步、备份和数据保留策略。
+- 鉴权：当前支持本地管理员 API key 和企业微信用户映射；生产可继续接企业 SSO/IAM。
+- 权限过滤：当前已在入库 metadata、dense、BM25、parent hydration、RAG service 和 cache key 中执行 ACL；上线前必须跑权限测试。
+- 异步入库：当前已有任务表、worker、索引版本和回滚；生产仍需队列化、并发控制和任务告警。
+- 观测：当前有 JSON request log、`/metrics`、错误指标和粗粒度 retrieval/LLM latency；生产仍需集中化日志、告警和 trace。
+- 数据治理：当前有索引版本和审计记录；生产仍需删除同步、保留期、备份恢复和数据库迁移。
+
+## Smoke Test Checklist
+
+staging 部署后执行：
+
+```bash
+curl -fsS http://127.0.0.1:8000/health
+curl -fsS http://127.0.0.1:8000/metrics
+.venv/bin/pytest tests/test_auth_context.py tests/test_permission_retrieval.py tests/test_wecom_signature.py -v
+.venv/bin/pytest tests/test_error_handling.py tests/test_metrics.py -v
+```
+
+人工检查：
+
+- 无管理员凭据访问 `/admin/indexes` 返回 401/403。
+- 企业微信无效 callback 签名返回 403，且不调用 RAG。
+- 管理员能查看 active index 和审计 session。
+- 普通用户只看到自己 ACL 允许的来源。
+- 日志中有 request id、tenant id、user hash、index version，且没有 API key、企业微信密文或完整原始文档。

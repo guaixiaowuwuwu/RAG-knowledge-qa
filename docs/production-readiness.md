@@ -10,8 +10,15 @@
 - `/ask` 和 `/ask/stream` 的问题长度限制：`MAX_QUESTION_CHARS`。
 - Chat LLM 客户端请求超时：`LLM_TIMEOUT_SECONDS`。
 - Query Rewrite/HyDE 超时：`QUERY_TRANSFORM_TIMEOUT_SECONDS`。
-- 请求级结构化日志：method、path、status、duration、request id。
-- Debug trace 中包含检索和 LLM 粗粒度耗时。
+- 企业模式身份上下文：`tenant_id`、`user_id`、部门、角色、权限版本和来源。
+- 文档 ACL 贯穿入库 metadata、Chroma/BM25/parent hydration、RAG service 和答案缓存 key。
+- 企业微信回调验签、文本消息处理、用户映射和主动/被动回复。
+- 问答审计、引用记录、反馈 API 和管理员审计查询。
+- 异步入库任务、版本化索引目录、active index 原子切换和回滚入口。
+- 请求级结构化 JSON 日志：request id、tenant id、user id hash、path、status、duration、index version。
+- Prometheus 文本指标端点 `/metrics`：请求量、错误量、拒答、空检索、retrieval latency、LLM latency、入库任务状态。
+- LLM 失败安全降级：最终生成服务不可用时返回安全提示，并可附带已通过权限过滤的来源。
+- Debug trace 中包含检索和 LLM 粗粒度耗时；不会返回 API key、企业微信密文或原始秘钥。
 - 本地延迟 benchmark：`python -m scripts.benchmark --limit 20 --debug`。
 
 ## 配置项
@@ -24,6 +31,13 @@
 | `ANSWER_CACHE_BACKEND` | `redis` | 缓存后端，可选 `redis` 或测试用 `memory` |
 | `ANSWER_CACHE_TTL_SECONDS` | `300` | 答案缓存 TTL |
 | `REDIS_URL` | `redis://localhost:6379/0` | Redis 连接地址 |
+| `AUTH_ENABLED` | `false` | 本地默认关闭；staging/prod 必须开启 |
+| `ADMIN_API_KEYS` | 空 | 管理员 bootstrap key，生产应由密钥系统注入 |
+| `AUDIT_DB_PATH` | `data/runtime/audit.sqlite3` | 审计、反馈和入库任务 SQLite 路径 |
+| `INDEX_ROOT_DIR` | `data/indexes` | 版本化索引根目录 |
+| `ACTIVE_INDEX_VERSION_PATH` | `data/indexes/active_version.txt` | 当前 active index 指针 |
+| `INGESTION_MODE` | `sync` | 本地同步；试点建议使用 `async` + worker |
+| `WECOM_ENABLED` | `false` | 企业微信入口开关 |
 
 ## Redis 缓存设计
 
@@ -45,7 +59,7 @@
 失效策略：
 
 - TTL 默认 300 秒。
-- 重建索引后，生产环境应增加显式 index version 或 corpus version 到 key 中；当前本地版使用 collection name 隔离，适合 demo，不足以处理多租户生产索引版本。
+- 缓存 key 已包含 active index version、tenant、user hash 和 permission version，避免跨用户或索引版本复用。
 - Redis 不可用时会记录 warning 并降级为无缓存，不阻断问答。
 
 适合缓存的场景：
@@ -69,11 +83,15 @@
 - `QUERY_TRANSFORM_TIMEOUT_SECONDS` 限制 Query Rewrite/HyDE 调用。
 - `LLM_TIMEOUT_SECONDS` 限制 chat completion 调用。
 
-生产建议：
+当前未内置 per-user 令牌桶限流；试点部署必须在入口层配置限流，建议基线：
 
-- 在 API Gateway/Nginx 层增加请求体大小限制。
-- 增加用户级和 IP 级限流。
-- 将 `/ingest` 移到鉴权后台或异步任务队列。
+- Nginx/API Gateway 对 `/ask` 和企业微信 callback 设置每用户或每 IP 限流，例如 60 req/min，burst 10。
+- 对 `/admin/*` 设置更严格限流，例如 10 req/min，并限制来源网段。
+- 设置请求体大小上限，企业微信 callback 和 `/ask` 不应接收大文件正文。
+
+后续可增强：
+
+- 增加应用内 per-user limiter，对 `RequestContext.user_id` + `tenant_id` 计数。
 - 为 embedding、reranker、LLM 分别设置重试、熔断和超时预算。
 
 ## 降级策略
@@ -82,13 +100,13 @@
 
 当前行为：
 
-- 普通问答会抛出上游异常。
+- 普通问答不会向前端或企业微信暴露上游堆栈。
+- 检索成功但最终 LLM 失败时，返回“回答服务暂时不可用，请稍后重试。”，并保留已通过 ACL 过滤的 sources。
+- 审计记录 `refusal_reason=llm_unavailable`，指标记录 `rag_errors_total{stage="llm"}`。
 - Query Rewrite/HyDE 的失败会被 `QueryTransformer` 捕获，回退到原始问题。
 
-生产建议：
+后续可增强：
 
-- 对最终回答 LLM 加统一异常处理，返回“检索到资料但生成服务暂不可用”的错误。
-- 可在失败时返回 Top-K 引用片段，避免用户完全无结果。
 - 为不同模型提供路由降级，例如主模型失败后切到备用模型。
 
 ### Reranker 不可用
@@ -122,29 +140,54 @@
 
 - BM25 corpus 缺失时返回空 BM25。
 - Chroma collection 为空时 dense 结果为空。
-- `/corpus/status` 可查看文档数、chunk 数、BM25 和 Chroma 状态。
+- `/corpus/status` 可查看文档数、chunk 数、BM25、parent corpus 和 Chroma 状态，并通过 `ready` / `readiness_reason` 明确区分可用索引与空索引。
+- 当前已验证的本地默认索引为 `data/chroma`，`ready=true`、Chroma chunks 5171、BM25 rows 5171、parent rows 2309。
+- 异步入库 worker 构建新版本目录，校验成功后才切换 active index；失败不会改变 active index。
+- 管理员可通过 `/admin/indexes/{version}/activate` 回滚到上一版成功索引。
 
 生产建议：
 
 - 启动时做 readiness check，索引未就绪则不接流量。
-- 索引重建使用新版本目录，完成后原子切换。
-- 保留上一版可用索引用于回滚。
+- 为 `data/indexes` 和 `data/runtime/audit.sqlite3` 做备份与保留策略。
 
 ## 可观测性
 
 当前日志：
 
-- `app.requests` logger 输出 `request_id`、HTTP method、path、status code、duration。
+- `app.requests` logger 输出 JSON 字段：`request_id`、HTTP method、path、status、duration、tenant id、user id hash、active index version。
 - 响应头包含 `x-request-id` 和 `x-process-time-ms`。
 - Debug trace 包含 query variants、dense candidates、BM25 candidates、RRF scores、reranker scores、parent hydration、final chunks 和粗粒度 timings。
 
+当前指标：
+
+- `/metrics` 暴露 Prometheus 文本格式。
+- `rag_http_requests_total`、`rag_http_errors_total`、`rag_http_request_duration_ms_*`。
+- `rag_refusals_total`、`rag_empty_retrievals_total`、`rag_errors_total`。
+- `rag_retrieval_latency_ms_*`、`rag_llm_latency_ms_*`。
+- `rag_ingestion_jobs_total`。
+
 生产建议：
 
-- 使用 JSON 日志格式，加入 environment、service version、user id hash、tenant id、corpus version。
-- 指标：请求量、错误率、空检索率、cache hit rate、retrieval latency、rerank latency、LLM latency、token usage。
+- 日志采集侧补充 environment、service version、pod/host 等部署字段。
+- 增加 cache hit rate、reranker latency、token usage 和 worker 循环指标。
 - Trace：将 retrieval、rerank、prompt assembly、LLM call 拆成 span。
 - 质量监控：定期运行 `scripts.evaluate` 和 `scripts.evaluate_answers`，保存趋势。
 - 可选工具：LangSmith、Phoenix、OpenTelemetry、Prometheus/Grafana、Sentry。
+
+## 安全检查清单
+
+staging/prod 上线前必须逐项确认：
+
+- `AUTH_ENABLED=true`，本地 fallback 只允许开发环境使用。
+- 管理员接口 `/admin/*`、`/ingest`、`/evaluation/*`、`/corpus/status` 不直接暴露到公网，且需要管理员凭据。
+- `ADMIN_API_KEYS`、`OPENAI_API_KEY`、`WECOM_SECRET`、`WECOM_TOKEN`、`WECOM_ENCODING_AES_KEY` 由密钥系统注入，不写入 Git。
+- 企业微信 callback 使用官方验签；无效签名不能调用 RAG。
+- 文档 manifest 中为非公开文档配置 tenant、部门、用户或角色 ACL。
+- ACL 测试、权限检索测试、企业微信签名测试、审计测试在发布前通过。
+- 审计库配置备份、保留期和访问权限；日志中只记录 user hash，不记录原始 API key 或密文。
+- LLM provider 数据使用政策已记录并经企业侧确认。
+- `data/indexes` 有备份与回滚演练，active index 切换可追溯。
+- 发布前至少运行企业 smoke：`tests/test_enterprise_smoke.py`，确认 Web/API、企业微信、ACL、审计、异步入库和回滚在同一场景中连通。
 
 ## 本地延迟 Benchmark
 
@@ -168,9 +211,9 @@ python -m scripts.benchmark --limit 20 --debug
 
 ## 向生产演进的优先级
 
-1. 把 `/ingest` 从同步 API 改为队列任务，并加入索引版本。
-2. 抽象向量库 adapter，增加 Milvus/Qdrant/pgvector 实现。
-3. 引入 Redis cache hit rate 指标和 corpus version cache key。
-4. 增加统一异常处理中间件，将上游错误转为可解释 API 响应。
-5. 接入 OpenTelemetry trace 和 JSON logs。
-6. 为权限过滤、文档删除、索引回滚补测试。
+1. 抽象向量库 adapter，增加 Milvus/Qdrant/pgvector 实现。
+2. 增加应用内 per-user rate limiter 和 cache hit rate 指标。
+3. 拆分 retrieval、rerank、prompt assembly、LLM call 为 OpenTelemetry spans。
+4. 增加文档删除同步、索引保留清理和灾备恢复演练。
+5. 将 SQLite 审计和任务表迁移到企业数据库。
+6. 扩展端到端企业 smoke 到真实 staging 数据、真实企业微信后台和浏览器自动化。

@@ -22,6 +22,9 @@ class EvalCase:
     ground_truth: str
     expected_sources: list[str]
     expected_answer_keywords: list[str] = field(default_factory=list)
+    expected_pages: dict[str, list[int]] = field(default_factory=dict)
+    expected_chunk_keywords: list[str] = field(default_factory=list)
+    evidence_notes: str = ""
     id: str = ""
     category: str = ""
     difficulty: str = ""
@@ -65,6 +68,7 @@ def parse_eval_case(row: dict, *, line_number: int) -> EvalCase:
         line_number,
     )
     is_negative = bool(row.get("is_negative", False))
+    expected_pages = _page_map(row.get("expected_pages", {}), expected_sources, line_number)
 
     return EvalCase(
         id=str(row["id"]).strip(),
@@ -72,6 +76,9 @@ def parse_eval_case(row: dict, *, line_number: int) -> EvalCase:
         ground_truth=str(row["ground_truth"]).strip(),
         expected_sources=expected_sources,
         expected_answer_keywords=expected_answer_keywords,
+        expected_pages=expected_pages,
+        expected_chunk_keywords=_string_list(row.get("expected_chunk_keywords", []), "expected_chunk_keywords", line_number),
+        evidence_notes=str(row.get("evidence_notes", "")).strip(),
         category=str(row.get("category", "")).strip(),
         difficulty=str(row.get("difficulty", "")).strip(),
         language=str(row.get("language", "")).strip(),
@@ -111,6 +118,11 @@ def validate_eval_cases(
             for source in case.expected_sources:
                 if not _source_exists(source, source_base_dir):
                     errors.append(f"{label}: expected source does not exist: {source}")
+        for source, pages in case.expected_pages.items():
+            if source not in case.expected_sources:
+                errors.append(f"{label}: expected_pages source is not in expected_sources: {source}")
+            if any(page < 1 for page in pages):
+                errors.append(f"{label}: expected_pages must contain positive page numbers")
 
     return errors
 
@@ -119,6 +131,39 @@ def _string_list(value, field_name: str, line_number: int) -> list[str]:
     if not isinstance(value, list):
         raise EvalDatasetError(f"line {line_number}: {field_name} must be a list")
     return [str(item).strip() for item in value if str(item).strip()]
+
+
+def _page_map(value, expected_sources: list[str], line_number: int) -> dict[str, list[int]]:
+    if value in ({}, [], None):
+        return {}
+
+    if isinstance(value, list):
+        if len(expected_sources) != 1:
+            raise EvalDatasetError(f"line {line_number}: expected_pages list form requires exactly one expected source")
+        return {expected_sources[0]: _int_list(value, "expected_pages", line_number)}
+
+    if not isinstance(value, dict):
+        raise EvalDatasetError(f"line {line_number}: expected_pages must be an object or list")
+
+    pages_by_source: dict[str, list[int]] = {}
+    for source, pages in value.items():
+        source_key = str(source).strip()
+        if not source_key:
+            raise EvalDatasetError(f"line {line_number}: expected_pages source must not be empty")
+        pages_by_source[source_key] = _int_list(pages, "expected_pages", line_number)
+    return pages_by_source
+
+
+def _int_list(value, field_name: str, line_number: int) -> list[int]:
+    if not isinstance(value, list):
+        raise EvalDatasetError(f"line {line_number}: {field_name} values must be lists")
+    pages = []
+    for item in value:
+        try:
+            pages.append(int(item))
+        except (TypeError, ValueError) as exc:
+            raise EvalDatasetError(f"line {line_number}: {field_name} values must be integers") from exc
+    return pages
 
 
 def _source_exists(source: str, source_base_dir: Path) -> bool:

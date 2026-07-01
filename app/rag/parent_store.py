@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from app.ingestion.chunker import Chunk
+from app.security.acl import RetrievalAccessFilter
 
 
 class JsonlParentStore:
@@ -42,7 +43,11 @@ class JsonlParentStore:
     def get(self, parent_id: str) -> Chunk | None:
         return self._parents.get(parent_id)
 
-    def hydrate(self, children: list[Chunk]) -> list[Chunk]:
+    def hydrate(
+        self,
+        children: list[Chunk],
+        access_filter: RetrievalAccessFilter | None = None,
+    ) -> list[Chunk]:
         hydrated: list[Chunk] = []
         seen_parent_ids: set[str] = set()
         for child in children:
@@ -54,6 +59,9 @@ class JsonlParentStore:
             if str(parent_id) in seen_parent_ids:
                 continue
             seen_parent_ids.add(str(parent_id))
+            if access_filter is not None and not access_filter.can_access_metadata(parent.metadata):
+                hydrated.append(child)
+                continue
             metadata = dict(parent.metadata)
             metadata["matched_child_chunk_index"] = child.metadata.get("chunk_index")
             hydrated.append(Chunk(content=parent.content, source=parent.source, metadata=metadata))

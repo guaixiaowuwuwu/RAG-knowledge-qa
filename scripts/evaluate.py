@@ -7,7 +7,9 @@ from app.api.routes import build_retriever, build_vector_store
 from app.core.config import get_settings
 from app.evaluation.dataset import EvalCase, load_eval_cases
 from app.evaluation.report import build_retrieval_report
+from app.ingestion.index_versions import get_index_paths, versioned_indexing_enabled
 from app.rag.bm25 import BM25Retriever
+from app.rag.confidence import RetrievalConfidenceConfig, decide_retrieval_confidence
 from app.rag.documents import RetrievedDocument, chunk_to_retrieved_document
 from app.rag.hybrid_retriever import HybridRetriever
 from app.rag.llm import OpenAIChatLLM
@@ -24,6 +26,13 @@ RETRIEVER_VARIANTS = [
     "full",
 ]
 
+COMPARE_RETRIEVER_VARIANTS = [
+    "dense",
+    "hybrid",
+    "hybrid-rerank",
+    "hybrid-rerank-parent",
+]
+
 
 class IdentityReranker:
     def rerank(self, query: str, documents: list[RetrievedDocument], top_n: int) -> list[RetrievedDocument]:
@@ -33,9 +42,36 @@ class IdentityReranker:
 def retrieve_cases(cases: list[EvalCase], retriever, top_k: int) -> list[list[RetrievedDocument]]:
     retrieved: list[list[RetrievedDocument]] = []
     for case in cases:
-        chunks = retriever.similarity_search(case.question, top_k=top_k)
-        retrieved.append([chunk_to_retrieved_document(chunk) for chunk in chunks])
+        documents, _confidence = retrieve_case_documents(case, retriever, top_k=top_k)
+        retrieved.append(documents)
     return retrieved
+
+
+def retrieve_case_documents(
+    case: EvalCase,
+    retriever,
+    *,
+    top_k: int,
+    confidence_config: RetrievalConfidenceConfig | None = None,
+) -> tuple[list[RetrievedDocument], dict]:
+    confidence_config = confidence_config or RetrievalConfidenceConfig()
+    if hasattr(retriever, "similarity_search_with_trace"):
+        result = retriever.similarity_search_with_trace(case.question, top_k=top_k)
+        chunks = result.chunks
+        trace = result.trace
+    else:
+        chunks = retriever.similarity_search(case.question, top_k=top_k)
+        trace = None
+
+    decision = decide_retrieval_confidence(
+        case.question,
+        chunks,
+        trace=trace,
+        config=confidence_config,
+    )
+    if decision.should_refuse:
+        return [], decision.to_dict()
+    return [chunk_to_retrieved_document(chunk) for chunk in chunks], decision.to_dict()
 
 
 def build_retriever_variant(variant: str):
@@ -48,7 +84,8 @@ def build_retriever_variant(variant: str):
     if variant == "dense":
         return dense
 
-    sparse = BM25Retriever.from_jsonl(settings.bm25_corpus_path)
+    index_paths = get_index_paths(settings)
+    sparse = BM25Retriever.from_jsonl(index_paths.bm25_corpus_path)
     reranker = IdentityReranker()
     parent_store = None
     query_transformer = None
@@ -57,7 +94,7 @@ def build_retriever_variant(variant: str):
         reranker = build_bge_reranker(settings.reranker_model)
 
     if variant in {"hybrid-rerank-parent", "full"}:
-        parent_store = JsonlParentStore(settings.parent_corpus_path)
+        parent_store = JsonlParentStore(index_paths.parent_corpus_path)
 
     if variant == "full":
         transformer_llm = OpenAIChatLLM(
@@ -95,10 +132,15 @@ def build_report_for_variant(
     top_k: int,
     config: dict,
 ) -> dict:
-    all_retrieved = retrieve_cases(cases, retriever, top_k=top_k)
-
     report_cases = []
-    for case, retrieved_documents in zip(cases, all_retrieved, strict=False):
+    confidence_config = RetrievalConfidenceConfig.from_settings(get_settings())
+    for case in cases:
+        retrieved_documents, confidence = retrieve_case_documents(
+            case,
+            retriever,
+            top_k=top_k,
+            confidence_config=confidence_config,
+        )
         report_cases.append(
             {
                 "id": case.id,
@@ -106,8 +148,16 @@ def build_report_for_variant(
                 "ground_truth": case.ground_truth,
                 "expected_sources": case.expected_sources,
                 "expected_answer_keywords": case.expected_answer_keywords,
+                "expected_pages": case.expected_pages,
+                "expected_chunk_keywords": case.expected_chunk_keywords,
+                "evidence_notes": case.evidence_notes,
+                "category": case.category,
+                "difficulty": case.difficulty,
+                "language": case.language,
                 "is_negative": case.is_negative,
                 "retrieved": retrieved_documents,
+                "refusal_reason": confidence.get("refusal_reason"),
+                "confidence": confidence,
             }
         )
 
@@ -121,11 +171,18 @@ def build_report_for_variant(
 
 
 def config_snapshot(settings) -> dict:
+    index_paths = get_index_paths(settings)
     return {
         "embedding_model": getattr(settings, "embedding_model", ""),
         "chat_model": getattr(settings, "chat_model", ""),
         "ragas_judge_source": "business_qa_openai_config",
         "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": versioned_indexing_enabled(settings),
+        "effective_index_version": index_paths.version,
+        "effective_index_dir": str(index_paths.index_dir),
+        "effective_chroma_dir": str(index_paths.chroma_dir),
+        "effective_bm25_corpus_path": str(index_paths.bm25_corpus_path),
+        "effective_parent_corpus_path": str(index_paths.parent_corpus_path),
         "chroma_dir": str(getattr(settings, "chroma_dir", "")),
         "chroma_collection": getattr(settings, "chroma_collection", ""),
         "bm25_corpus_path": str(getattr(settings, "bm25_corpus_path", "")),
@@ -140,6 +197,10 @@ def config_snapshot(settings) -> dict:
         "query_rewrite_enabled": getattr(settings, "query_rewrite_enabled", None),
         "hyde_enabled": getattr(settings, "hyde_enabled", None),
         "max_query_variants": getattr(settings, "max_query_variants", None),
+        "min_reranker_score": getattr(settings, "min_reranker_score", None),
+        "min_final_source_count": getattr(settings, "min_final_source_count", None),
+        "enable_low_confidence_refusal": getattr(settings, "enable_low_confidence_refusal", None),
+        "time_sensitive_refusal_enabled": getattr(settings, "time_sensitive_refusal_enabled", None),
     }
 
 
@@ -202,7 +263,7 @@ def main(argv: list[str] | None = None) -> None:
     config = config_snapshot(settings)
     if args.compare:
         reports = []
-        for variant in RETRIEVER_VARIANTS:
+        for variant in COMPARE_RETRIEVER_VARIANTS:
             retriever = build_retriever_variant(variant)
             reports.append(
                 build_report_for_variant(
@@ -215,6 +276,7 @@ def main(argv: list[str] | None = None) -> None:
                 )
             )
         comparison = {
+            "generated_at": datetime.now().isoformat(),
             "dataset_path": str(eval_path),
             "top_k": top_k,
             "config": config,

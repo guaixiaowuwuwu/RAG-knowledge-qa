@@ -1,0 +1,1056 @@
+{
+  "dataset_path": "data/eval/sample_eval.jsonl",
+  "top_k": 4,
+  "selection": {
+    "sample": "mixed",
+    "limit": 10,
+    "include_categories": [],
+    "language": "all",
+    "random_seed": null,
+    "selected_cases": 10
+  },
+  "config": {
+    "embedding_model": "bge-m3",
+    "chat_model": "deepseek-v4-pro",
+    "ragas_judge_source": "business_qa_openai_config",
+    "ragas_embedding_model": "bge-m3",
+    "versioned_indexing_enabled": false,
+    "effective_index_version": "smoke-index",
+    "effective_index_dir": "data",
+    "effective_chroma_dir": "data/chroma",
+    "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+    "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+    "chroma_dir": "data/chroma",
+    "chroma_collection": "rag_knowledge_base",
+    "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+    "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+    "dense_retrieval_top_k": 20,
+    "bm25_retrieval_top_k": 20,
+    "rrf_k": 60,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_top_n": 5,
+    "parent_chunk_size": 2048,
+    "parent_chunk_overlap": 160,
+    "query_rewrite_enabled": true,
+    "hyde_enabled": true,
+    "max_query_variants": 4,
+    "min_reranker_score": -5.0,
+    "min_final_source_count": 1,
+    "enable_low_confidence_refusal": true,
+    "time_sensitive_refusal_enabled": true,
+    "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+  },
+  "summary": {
+    "cases": 10,
+    "pass_rate": 0.9,
+    "average_keyword_coverage": 0.7,
+    "citation_rate": 0.9,
+    "unknown_answer_rate": 0.1,
+    "negative_case_pass_rate": 1.0
+  },
+  "records": [
+    {
+      "id": "byd_2024_revenue_total",
+      "question": "比亚迪 2024 年年度报告披露的营业额和同比增幅是多少？",
+      "ground_truth": "比亚迪 2024 年营业额约人民币 777,102 百万元，同比增长 29.02%。",
+      "generated_answer": "比亚迪2024年营业收入为777,102,455,000.00元，同比增幅为29.02%【1】【4】。",
+      "expected_answer_keywords": [
+        "777,102",
+        "百万元",
+        "29.02%"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 24,
+          "chunk_index": 0,
+          "content": "24\n凭借技术、成本、规模等各方面优势，本集团未来将继续致力于新能源汽车技术突破创新和产品推广，积极推进传统\n燃油车转向新能源汽车的产业变革。本集团将通过“7+4”全市场战略推动新能源汽车的全方位拓展，应用范围覆盖 7大常\n规领域，即私家车、公交车、出租车、环卫车、道路客运、城市商品物流、城市建筑物流，4大特殊领域，即仓储、矿山、\n港口和机场，实现新能源汽车对道路交通运输的全覆盖。同时，集团也将结合新能源汽车的优势和自主品牌强势崛起的契\n机，在全球范围内加推更多车型，进一步丰富新能源汽车产品线，提升市场份额和行业地位，推动本集团始终走在全球新\n能源汽车技术创新和产品应用的最前沿。目前，本集团新能源汽车产品已遍及全球6大洲、100多个国家和地区、超过400个\n城市。\n此外，比亚迪发挥集成创新和长期积累综合技术优势，将电动车产业链延伸到轨道交通领域，推出具有完全自主知识\n产权的中运量“云轨”和低运量“云巴”，为全球城市治理交通拥堵提供有效方案。\n四、主营业务分析\n1、概述\n参见“管理层讨论与分析”中的“一、报告期内公司所处的行业情况”相关内容。\n2、收入与成本\n（1） 营业收入构成\n单位：元\n\n2024 年 2023 年\n同比增减\n金额 占营业收入比重 金额 占营业收入比重\n营业收入合计 777,102,455,000.00 100% 602,315,354,000.00 100% 29.02%\n分行业\n日用电子器件制\n造业 159,608,576,000.00 20.54% 118,576,910,000.00 19.68% 34.60%\n交通运输设备及\n电气制造业 617,381,935,000.00 79.45% 483,453,318,000.00 80.27% 27.70%\n其他 111,944,000.00 0.01% 285,126,000.00 0.05% -60.74%\n分产品\n手机部件、组装\n及其他产品 159,608,576,000.00 20.54% 118,576,910,000.00 19.68% 34.60%\n汽车、汽车相关\n产品及其他产品 617,381,935,000.00 79.45% 483,453,318,000.00 80.27% 27.70%\n其他 111,944,000.00 0.01% 285,126,000.00 0.05% -60.74%\n分地区\n中国（包括港澳\n台地区） 555,217,682,000.00 71.45% 442,093,854,000.00 73.40% 25.59%\n境外 221,884,773,000.00 28.55% 160,221,500,000.00 26.60% 38.49%\n分销售模式\n直销 373,156,016,000.00 48.02% 291,625,025,000.00 48.42% 27.96%\n经销 403,946,439,000.00 51.98% 310,690,329,000.00 51.58% 30.02%\n（2） 占公司营业收入或营业利润 10%以上的行业、产品、地区、销售模式的情况"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 19,
+          "chunk_index": 0,
+          "content": "182024 比亚迪可持续发展报告\n可持续发展绩效\n我们的企业治理\n约 1,500 亿公里\n2024年比亚迪新能源汽车纯电里程\n4,272,145辆\n2024年比亚迪新能源汽车销量\n我们的环境贡献\n新能源汽车\n全年新增节能项目超410个，碳减排贡献超210,000吨二氧化碳当量\n自愿购买绿证超223万张，购买绿电约4.68亿千瓦时\n节能降碳\n我们的价值链贡献\n29,965,000元\n2024年集团捐赠支出\n30亿元\n教育慈善基金计划\n公益慈善\n95%以上\n客户满意度\n0宗\n重大的客户隐私泄露事件\n客户关系\n首次开展冲突矿产尽职调查\n强化供应商全生命周期管理\n75场\n供应商技术交流会\n2 2025年3月24日，将董事会层级战略委员会更名为战略及可持续发展委员会\n清廉治理，以信立业 绿动未来，技术领航 精工品质，匠心铸魂 才聚星河，智驱筑梦 链合共荣，责任先行 科技向善，守护明天 鉴证声明开篇 附录\n我们的员工\n员工多元化\n员工0元持股计划投入超18亿，惠及员工人数近12,000员工福利\n30.11%\n女性员工占比\n9.81%\n少数族裔占比\n员工发展 超1,600名\n博士后培养规模\n55.35小时\n员工受训人均时数\n截至报告期末，比亚迪员工总人数为：968,872，较2023年增长37.7%\n回报股东 777,102,455千元\n2024年营业收入\n40,254,346千元\n2024年归属于母公司所有者的净利润，\n利润增长率34.00%\n创新研发\n2024年研发投入54,160,964千元，占营业收入6.97%\n累计申请中国专利46,201件，境外专利13,490件\nESG治理\n成立董事会层战略及\n可持续发展委员会2\n任命首席可持续发展官CSO\n2045年\n力争实现全价值链碳中和\n气候变化目标\n以2023年为基准，2030年自身\n运营碳排放强度降低50%"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n证券代码：002594 证券简称：比亚迪 公告编号：2025-014\n比亚迪股份有限公司 2024 年年度报告摘要\n一、重要提示\n本年度报告摘要来自年度报告全文，为全面了解本公司的经营成果、财务状况及未来发展规划，投资者应当到证监会指\n定媒体仔细阅读年度报告全文。\n所有董事均已出席了审议本报告的董事会会议。\n非标准审计意见提示\n□适用 不适用\n董事会审议的报告期利润分配预案或公积金转增股本预案\n适用 □不适用\n是否以公积金转增股本\n□是 否\n公司经本次董事会审议通过的利润分配预案为：以 3,039,065,855 为基数，向全体股东每 10 股派发现金红利 39.74 元\n（含税） ，送红股0 股（含税） ，不以公积金转增股本。\n董事会决议通过的本报告期优先股利润分配预案\n□适用 不适用\n二、公司基本情况\n1、公司简介\n股票简称 比亚迪（A 股） 、比亚迪股份（H 股） 股票代码 002594、01211、81211\n股票上市交易所 深圳证券交易所、香港联合交易所有限公司\n联系人和联系方式 董事会秘书 证券事务代表\n姓名 李黔 程燕/吴越\n办公地址 深圳市坪山区比亚迪路 3009 号 深圳市坪山区比亚迪路 3009 号\n传真 （+86）755-8420 2222 （+86）755-8420 2222\n电话 （+86）755-8988 8888-62126 （+86）755-8988 8888-62126\n电子信箱 db@byd.com db@byd.com\n2、报告期主要业务或产品简介\n本集团主要从事以新能源汽车为主的汽车业务，手机部件及组装业务，二次充电电池及光伏业务，同时利用自身的\n技术优势拓展城市轨道交通业务领域。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 137,
+          "chunk_index": 0,
+          "content": "137\n\n审计报告（续）\n\n安永华明（2025）审字第70013328_H01 号\n比亚迪股份有限公司\n\n三、关键审计事项（续）\n\n关键审计事项： 该事项在审计中是如何应对：\n收入确认\n比亚迪股份有限公司的营业收入主要来自于汽车、汽车\n相关产品及其他产品、手机部件、组装及其他产品。\n2024 年度，比亚迪股份有限公司合并财务报表中营业收\n入金额为人民币 7,771 亿元，较 2023 年度增加人民币\n1,748 亿元，增长率为 29%。\n\n考虑到本年收入持续增长，销售量大且涉及不同类型的\n客户以及不同的业务类型，收入的不恰当确认对财务报\n表有重大影响。因此，我们将收入确认识别为关键审计\n事项。\n\n该会计政策、重大会计判断和估计以及相关财务报表披\n露参见附注五、24、25、33，以及附注七、44。\n\n我们在审计过程中对收入确认执行的审计程序主要包括：\n 了解、评价和测试与营业收入相关的内部控制的设计及执\n行有效性；\n 获取主要的销售合同，检查和识别与控制权转移及收入确\n认相关的合同条款与条件，评价收入确认的会计政策是否\n符合企业会计准则的要求；\n 结合应收账款函证，以抽样方式向主要客户函证本期销售\n额，对未回函的样本执行替代测试；\n 就资产负债表日前后的销售商品交易选取样本，检查出库\n单和物流单据等支持性文件，评价相关收入是否被记录于\n恰当的会计期间；\n 根据不同的收入模式，选取样本，执行收入确认的细节测\n试，检查销售订单、出库单、物流单、签收单、银行流\n水、出口报关单及销售发票等支持性文件；\n 执行分析性复核程序，对比各类别收入及毛利率的变动情\n况，分析收入与毛利率变动的合理性；\n 检查报告期后是否存在重大收入冲回或大额退货的情况；\n 复核合并财务报表附注中有关营业收入的披露。"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 0.6666666666666666,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "777,102",
+          "29.02%"
+        ],
+        "missing_keywords": [
+          "百万元"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_sales_milestone",
+      "question": "比亚迪 2024 年在新能源汽车销量和下线里程碑方面有哪些表述？",
+      "ground_truth": "2024 年比亚迪新能源汽车销量同比增长超 40%，蝉联中国汽车市场车企销量冠军、中国汽车市场品牌销量冠军和全球新能源汽车市场销量冠军，并在 11 月成为全球首家达成第 1,000 万辆新能源汽车下线里程碑的车企。",
+      "generated_answer": "比亚迪2024年在新能源汽车销量与下线里程碑方面的关键表述如下：\n\n**销量**\n- 2024年比亚迪新能源汽车销量为 **4,272,145辆**[3]。\n- 销量在高基数基础上同比增长超 **40%**，市占率提升至 **33.2%**[2]。\n- 蝉联 **中国汽车市场车企销量冠军、中国汽车市场品牌销量冠军** 和 **全球新能源汽车市场销量冠军**[2]。\n\n**下线里程碑**\n- **7月**：比亚迪泰国工厂竣工，迎来 **第800万辆** 新能源汽车下线，成为全球首家达成此里程碑的车企，海豚作为下线车型亮相[1]。\n- **11月**：在比亚迪成立30周年之际，达成 **第1,000万辆** 新能源汽车下线的新里程碑，成为全球首家达成该里程碑的车企[1][2][4]。",
+      "expected_answer_keywords": [
+        "超40%",
+        "销量冠军",
+        "1,000 万辆"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "summary",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 10,
+          "chunk_index": 0,
+          "content": "92024 比亚迪可持续发展报告\n7月\n比亚迪泰国工厂竣工暨第800万辆新能源汽车下线\n比亚迪在泰国罗勇府举行泰国工厂竣工暨第 800万\n辆新能源汽车下线仪式，标志着比亚迪开启全球化\n新篇章。比亚迪泰国工厂从开工到投产历时仅16 个\n月，年产能约15万辆，包含整车四大工艺和零部件\n工厂。与此同时， 比亚迪也成为全球首家达成第\n800万辆新能源汽车下线的车企， 海豚作为下线车\n型在泰国工厂亮相。\n8月\n比亚迪攀升2024年《财富》世界500强\n比亚迪连续3 年上榜《财富》世界500强榜单，从\n去年的第 212位跃升至143位，成为年度排名升幅\n最大的车企。\n9月\n比亚迪12米电动大巴乌拉圭100台订单交车仪式\n比亚迪12米电动大巴乌拉圭 100台订单交付仪式在\n比亚迪青岛工业园举行，标志着比亚迪在国际市场\n上再次取得了重大突破，同时也为乌拉圭的绿色交\n通发展注入了新的动力。\n10月\n11月\n比亚迪成立30周年暨第1,000万辆新能源车下线\n比亚迪成立30周年暨第1, 000万辆新能源汽车下线\n发布会在深圳市深汕特别合作区比亚迪小漠工业园\n举办。从 30年前小厂房里 20人的创业团队， 凭着\n“敢想、敢干、敢坚持”的工程师精神， 发展到如\n今近百万名员工的世界级企业， 比亚迪坚持用技术\n创新满足人们对美好生活的向往 ，并用实际行动回\n馈社会各界、车主和员工的支持。\n12月\n比亚迪捐助12亿越南盾支援越南洪灾\n超强台风“摩羯”登陆越南，给越南北部造成了严\n重的洪涝灾害。 比亚迪电子越南工厂地处的越南北\n部富寿省是本次台风的重灾区。 比亚迪向受灾严重\n的富寿灾区和宣光灾区，共捐助12亿越南盾1资金，\n以支援灾区重建工作。\n比亚迪正式进入埃塞俄比亚市场\n比亚迪正式进入埃塞俄比亚市场 ，开启东非电动出\n行。比亚迪携手当地经销商， 在埃塞俄比亚首都亚\n的斯亚贝巴举办品牌发布会。截至2024年，比亚迪\n已进入非洲13个国家和地区，深度参与非洲的绿色\n转型进程。未来，比亚迪将持续与各方伙伴紧密合\n作，深化非洲市场布局， 为消费者带来更多样化 、\n更环保的新能源出行体验。\n1 共计捐赠两次，其中一次为2亿越南盾，另一次为10亿越南盾"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 15,
+          "chunk_index": 0,
+          "content": "15\n和产品，并于十一月达成第1,000万辆新能源汽车下线的新里程碑，推动新能源汽车渗透率加速提升，助力行业更深层次变\n革，实现业务的长足发展。根据中汽协数据，二零二四年本集团新能源汽车销量在高基数的基础上同比增长超40%，市占率\n进一步提升至33.2%，同比增长1.3个百分点。二零二四年，本集团蝉联中国汽车市场车企销量冠军、中国汽车市场品牌销\n量冠军和全球新能源汽车市场销量冠军。\n坚持自主创新，用颠覆性、原创性技术催生壮大新质生产力\n电动化领域——本集团发布“e平台3.0 Evo” ，在智能快充、整车安全和整车运动控制等多领域实现进化。本集团亦\n推出“第五代DM技术”，实现全球量产最高发动机热效率46.06%、全球最低百公里亏电油耗2.9L和全球最长综合续航2,100\n公里，开创油耗“2”时代。此外，“腾势”全新专属技术平台“易三方”发布，实现4.62米极致转弯半径、65%的泊车效\n率提升、15°蟹行角度等极致操控体验。\n智能化领域——本集团于年初举办“2024 比亚迪梦想日”发布会，首发智能化全新战略——“整车智能”，通过“璇\n玑”架构实现了电动化与智能化的高效融合。期内，本集团在智驾领域持续加大投入，自研车载计算平台，成立感知实验\n室、端到端大模型团队、AI超算中心，并依托百万级体量优势推动技术应用上车。 本集团高阶智能驾驶辅助系统“天神之\n眼”亦于年内在全国范围内正式开通无图城市领航功能，适配 “仰望U8”、“腾势Z9GT”、“腾势N7”，实现“全国都能\n开，有路都好开”，稳居高阶智驾第一梯队。\n新能源乘用车各品牌携手并进，产品矩阵全市场覆盖\n新能源乘用车领域，依托于核心技术的 创新与迭代以及对消费者需求的精准洞察，本集团逐步完善由 “比亚迪”、\n“方程豹”、“腾势”及“仰望”所构建的多品牌梯度布局，覆盖从家用到豪华、从大众到个性化，更好地满足用户多方\n位全场景用车需求。二零二四年，各品牌携手并进，推动本集团销量 快速增长，屡破前高。凭借行业领先的创新技术、不\n断提升的品牌力、快速发展的出海业务、持续扩大的规模优势和强大的产业链成本控制能力，本集团新能源乘用车业务盈\n利能力持续提升。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 19,
+          "chunk_index": 0,
+          "content": "182024 比亚迪可持续发展报告\n可持续发展绩效\n我们的企业治理\n约 1,500 亿公里\n2024年比亚迪新能源汽车纯电里程\n4,272,145辆\n2024年比亚迪新能源汽车销量\n我们的环境贡献\n新能源汽车\n全年新增节能项目超410个，碳减排贡献超210,000吨二氧化碳当量\n自愿购买绿证超223万张，购买绿电约4.68亿千瓦时\n节能降碳\n我们的价值链贡献\n29,965,000元\n2024年集团捐赠支出\n30亿元\n教育慈善基金计划\n公益慈善\n95%以上\n客户满意度\n0宗\n重大的客户隐私泄露事件\n客户关系\n首次开展冲突矿产尽职调查\n强化供应商全生命周期管理\n75场\n供应商技术交流会\n2 2025年3月24日，将董事会层级战略委员会更名为战略及可持续发展委员会\n清廉治理，以信立业 绿动未来，技术领航 精工品质，匠心铸魂 才聚星河，智驱筑梦 链合共荣，责任先行 科技向善，守护明天 鉴证声明开篇 附录\n我们的员工\n员工多元化\n员工0元持股计划投入超18亿，惠及员工人数近12,000员工福利\n30.11%\n女性员工占比\n9.81%\n少数族裔占比\n员工发展 超1,600名\n博士后培养规模\n55.35小时\n员工受训人均时数\n截至报告期末，比亚迪员工总人数为：968,872，较2023年增长37.7%\n回报股东 777,102,455千元\n2024年营业收入\n40,254,346千元\n2024年归属于母公司所有者的净利润，\n利润增长率34.00%\n创新研发\n2024年研发投入54,160,964千元，占营业收入6.97%\n累计申请中国专利46,201件，境外专利13,490件\nESG治理\n成立董事会层战略及\n可持续发展委员会2\n任命首席可持续发展官CSO\n2045年\n力争实现全价值链碳中和\n气候变化目标\n以2023年为基准，2030年自身\n运营碳排放强度降低50%"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 5,
+          "chunk_index": 0,
+          "content": "42024 比亚迪可持续发展报告\n董事长致辞\n比亚迪股份有限公司\n董事长兼总裁\n王传福\n2024年是比亚迪成立 30周年。面对百年变局的\n加速演进和可持续发展的时代浪潮， 我们勇担责\n任和使命， 把新能源汽车从中国推向世界， 成为\n全球首家达成第 1,000万辆新能源汽车下线的车\n企，并连续三年蝉联全球新能源汽车销量冠军；\n我们深度践行新发展理念 ，聚焦绿色低碳、 创新\n变革、平等机会、 协同合作、 诚信守正和价值共\n享六个关键领域，用 ESG体系标准为比亚迪可\n持续发展注入新的动能， 向全球分享我们的创新\n发展成果。 三十而立， 成就梦想。 回首30 年历\n程，我们在风雨洗礼中成长、 在历经考验中壮\n大，从一个20人的小企业，成长为全球新能源汽\n车品牌领军者， 走出一条高质量发展之路。 这背\n后在于我们比亚迪人心怀绿色梦想并奋斗不止，\n更离不开社会各界的关心支持 ！\n创业30年，我们因绿色梦想而立。 我们一直在思\n考怎样能给社会带来更多价值。 从太阳能、 储能\n和电动汽车“ 三大绿色梦想” ，到用电动汽车治\n理空气污染、 云巴治理交通拥堵的“ 绿色大交通\n体系 ”，都是出于我们“ 为地球降温1 ℃”的品\n牌愿景。如今，我们的新能源汽车运营足迹遍及\n全球90多个国家和地区的400 多个城市，有力推\n动了全球交通运输业和制造业的绿色低碳高质量\n发展。\n创业30年，我们因技术创新而立。 技术让我们站\n得更高、看得更远， 给了我们“ 敢”的勇气和底\n气。我们始终坚持“ 技术为王、 创新为本” 的发\n展理念不动摇， 坚持新能源战略不动摇， 不断催\n生、 壮大新质生产力 。我们推出刀片电池、\nDM-i超级混动 、e平台 3.0、CTB电池车身一\n体化、易四方、 云辇系统 、DMO超级混动越野\n平台及“天神之眼” 高阶智驾系统等， 用技术创\n新满足人们对美好生活的向往 。\n创业30年，我们因责任担当而立。 一直以来，我\n们积极参与国际可持续发展事务， 与全球相关机\n构开展合作 ，2024年为第 29届联合国气候变化\n大会（ COP29）提供电动大巴绿色出行服务；\n我们积极投身公益事业， 设立“ 30亿元教育慈善\n基金” ，助力科技和教育事业发展；我们推出\n《比亚迪基本纲要》 和首本官方图书《 工程师之\n魂》，向全社会分享比亚迪的成长历程和发展经\n验。此外，我们发挥制造业解决就业的蓄水池作\n用，截至目前累计解决近百万人就业， 促进社会\n稳定和谐发展。\n站在30年的新起点上， 我们的可持续发展报告是\n对过去的总结， 更是对未来的期待。 我们将把可\n持续发展理念融入企业战略和经营管理， 更好发\n挥企业创新主体作用， 同时筑牢合规经营底线，\n携手上下游产业链伙伴一起成就绿色梦想！\n最后，比亚迪庄重承诺：力争 2045年实现全价\n值链碳中和！"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 0.3333333333333333,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [
+          "销量冠军"
+        ],
+        "missing_keywords": [
+          "超40%",
+          "1,000 万辆"
+        ]
+      }
+    },
+    {
+      "id": "byd_info_disclosure_principles",
+      "question": "比亚迪信息披露事务管理制度要求信息披露遵循哪些基本原则？",
+      "ground_truth": "制度要求信息披露真实、准确、完整、及时、公平，并强调不得有虚假记载、误导性陈述或重大遗漏。",
+      "generated_answer": "信息披露的基本原则包括：\n1. 公司及其董事、高级管理人员应当保证披露信息的真实、准确、完整、及时、公平。[1]\n2. 信息披露应体现公开、公正、公平对待所有股东的原则。[1]",
+      "expected_answer_keywords": [
+        "真实",
+        "准确",
+        "完整",
+        "及时",
+        "公平"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf"
+      ],
+      "expected_pages": {
+        "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf": [
+          1
+        ]
+      },
+      "expected_chunk_keywords": [
+        "真实、准确、完整",
+        "及时、公平",
+        "虚假记载"
+      ],
+      "category": "policy",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n信息披露事务管理制度\n第一章 总则\n第一条 为规范比亚迪股份有限公司（以下简称“公司”）的信息披露行\n为，加强信息披露事务管理，促进公司规范运作，维护公司股东、债权人及其\n他利益相关人的合法权益，根据《中华人民共和国公司法》、《中华人民共和\n国证券法》（以下简称“《证券法》”）、《上市公司信息披露管理办法》、\n《深圳证券交易所股票上市规则》、《深圳证券交易所上市公司自律监管指引\n第1号——主板上市公司规范运作》、《香港联合交易所有限公司证券上市规\n则》、《股价敏感资料披露指引》以及《比亚迪股份有限公司章程》及其他法\n律、法规及规范性文件的规定，结合公司实际情况，特制定本制度。\n第二条 本制度对公司股东、全体董事、董事会秘书等高级管理人员和公司\n（含其分公司）、其全资或控股子公司，及其相关人员有约束力。\n第三条 本制度所称“信息”是指所有对公司证券及其衍生品种的交易价格可\n能产生较大影响而投资者尚未得知的重大事件，以及证券监管机构、深圳证券\n交易所（以下简称“深交所”）或香港联合交易所有限公司（以下简称“港交\n所”）要求披露的其他信息。\n本制度所称“及时”是指自起算日起或者触及披露时点的两个交易日内。\n“信息披露”是指在规定的时间内、在规定的媒体上、以规定的方式向社会\n公众公布上述定义的信息，并按有关规定及时报送证券监管机构、深交所或港\n交所审查或备案。信息披露文件主要包括招股说明书、募集说明书、上市公告\n书、定期报告和临时报告等。\n第二章 信息披露的基本原则\n第四条 信息披露是公司作为上市公司的持续责任。公司及其董事、高级管\n理人员应当忠实、勤勉地履行职责，保证披露信息的真实、准确、完整、及\n时、公平。\n第五条 公司信息披露应体现公开、公正、公平对待所有股东的原则，根据\n境内外监管规定，向境内外所有投资者同时公开披露信息。向境内投资者披露"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_insider_information_management_policy_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "内幕信息知情人管理制度\n第一章 总则\n第一条 为规范比亚迪股份有限公司（以下简称“公司”）内幕信息管理，加\n强内幕信息保密工作，维护公司信息披露的公开、公平、公正原则，保护广大投\n资者的合法权益，根据《中华人民共和国公司法》（以下简称“《公司法》”）、\n《中华人民共和国证券法》（以下简称“《证券法》”）、《上市公司信息披露\n管理办法》、《上市公司监管指引第 5 号——上市公司内幕信息知情人登记管理\n制度》、《深圳证券交易所股票上市规则》（以下简称“《股票上市规则》”）、\n《香港联合交易所有限公司证券上市规则》、《比亚迪股份有限公司公司章程》\n（以下简称“《公司章程》”）及《比亚迪股份有限公司信息披露管理制度》（以\n下简称“《信息披露管理制度》”）等有关法律、法规及规范性文件的规定，结\n合公司实际情况，特制定本制度。\n第二条 上市公司董事会应当按照《上市公司监管指引第 5 号——上市公司\n内幕信息知情人登记管理制度》以及证券交易所相关规则要求及时登记和报送内\n幕信息知情人档案，并保证内幕信息知情人档案真实、准确和完整，董事长为主\n要责任人。董事会秘书负责办理上市公司内幕信息知情人的登记入档和报送事宜。\n董事长与董事会秘书应当对内幕信息知情人档案的真实、准确和完整签署书面确\n认意见。\n第三条 未经董事会批准同意，公司任何部门和个人不得向外界泄露、报道、\n传送涉及公司的内幕信息和信息披露内容。\n第四条 公司董事、高级管理人员及公司各部门、分公司、子公司负责人都\n应做好内幕信息的保密工作，应积极配合董事会秘书做好内幕信息知情人的登记、\n报备工作，内幕信息知情人负有保密责任，在内幕信息依法披露前，不得公开或\n者泄露该信息，不得利用内幕信息买卖公司股票及其衍生品，不得进行内幕交易\n或配合他人操纵股票交易价格。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_investor_visit_reception_policy_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n投资者来访接待工作管理制度\n第一章 总则\n第一条 为维护比亚迪股份有限公司（以下简称“公司”）和投资者的合法权\n益，加强公司与投资者、分析师、财经媒体等特定对象（以下简称“投资者”）\n之间的信息沟通，提高公司投资者关系管理水平，根据《中华人民共和国公司法》、\n《中华人民共和国证券法》、《深圳证券交易所股票上市规则》、《深圳证券交\n易所上市公司自律监管指引第 1 号——主板上市公司规范运作》，以及《香港联\n合交易所有限公司证券上市规则》、《股价敏感资料披露指引》等法律法规和规\n范性文件以及公司《投资者关系管理制度》和公司章程的规定，结合公司实际情\n况，制定本制度。\n第二条 公司投资者来访接待工作严格遵守《中华人民共和国公司法》、《中\n华人民共和国证券法》等有关法律法规及深圳证券交易所有关业务规则的规定。\n第三条 公司投资者来访接待工作坚持公平、公正、公开的原则，保障所有\n投资者平等地享有知情权及其他合法权益。\n第四条 公司进行投资者来访接待工作时将注意尚未公布的内幕信息的保\n密，避免选择性信息披露行为。\n第五条 除非得到明确授权，公司员工不得在投资者来访接待工作中代表公\n司发言。\n第六条 本制度所称投资者来访接待工作是指公司接受证券分析、咨询及其\n他证券服务的机构及个人、从事证券投资的机构及个人的调研。\n第二章 目的和遵循原则\n第七条 制定本制度的目的在于规范公司在接受调研、采访、沟通或进行对\n外宣传、推广等活动时，增加公司信息披露的透明度及公平性，改善公司治理结\n构，增进资本市场对公司的了解和支持。\n第八条 公司接待工作遵循以下基本原则："
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_investor_relations_management_policy_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n投资者关系管理制度\n第一章 总则\n第一条 为保障投资者的知情权，增强比亚迪股份有限公司（下称“公司”）\n与投资者之间的沟通，规范公司为投资者提供服务的行为，提高公司治理水准\n和提升公司形象，根据《中华人民共和国公司法》（下称“《公司法》”）、\n《中华人民共和国证券法》（下称“《证券法》”）、《上市公司投资者关系管\n理工作指引》及其他有关法律、法规规定和《比亚迪股份有限公司章程》（下\n称“《公司章程》”），制定本制度。\n第二条 投资者关系管理是指公司通过便利股东权利行使、信息披露、互动\n交流和诉求处理等工作，加强与投资者及潜在投资者之间的沟通，增进投资者\n对上市公司的了解和认同，以提升公司治理水平和企业整体价值，实现尊重投\n资者、回报投资者、保护投资者目的的相关活动。\n第三条 投资者关系管理的基本原则：\n（一）合规性原则。公司投资者关系管理应当在依法履行信息披露义务的\n基础上开展，符合法律、法规、规章及规范性文件、行业规范和自律规则、公\n司内部规章制度，以及行业普遍遵守的道德规范和行为准则。\n（二）平等性原则。公司开展投资者关系管理活动，应当平等对待所有投\n资者，尤其为中小投资者参与活动创造机会、提供便利。\n（三）主动性原则。公司应当主动开展投资者关系管理活动，听取投资者\n意见建议，及时回应投资者诉求。\n（四）诚实守信原则。公司在投资者关系管理活动中应当注重诚信、坚守\n底线、规范运作、担当责任，营造健康良好的市场生态。\n第二章 投资者关系的组织和实施\n第四条 董事会秘书负责公司的投资者关系管理事务，并领导投资者关系部\n具体执行。公司控股股东、实际控制人以及董事和高级管理人员应当为董事会\n秘书履行投资者关系管理工作职责提供便利条件。\n公司的投资者接待工作应客观、真实、准确、完整地介绍和反映公司的实\n际状况，避免过度宣传可能给投资者造成的误导。"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_insider_information_management_policy_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_investor_visit_reception_policy_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_investor_relations_management_policy_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 1.0,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "真实",
+          "准确",
+          "完整",
+          "及时",
+          "公平"
+        ],
+        "missing_keywords": []
+      }
+    },
+    {
+      "id": "aapl_segments",
+      "question": "What reportable segments does Apple list in its 2025 Form 10-K?",
+      "ground_truth": "Apple manages its business primarily on a geographic basis and reports the Americas, Europe, Greater China, Japan, and Rest of Asia Pacific segments.",
+      "generated_answer": "Apple在2025年年报（Form 10-K）中列出的可报告分部包括：Americas、Europe、Greater China、Japan和Rest of Asia Pacific[1][4]。",
+      "expected_answer_keywords": [
+        "Americas",
+        "Europe",
+        "Greater China",
+        "Japan",
+        "Rest of Asia Pacific"
+      ],
+      "expected_sources": [
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "sec_filing",
+      "difficulty": "easy",
+      "language": "en",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 102,
+          "content": "Note 13 –\n\nSegment Information and Geographic Data\n\nThe Company manages its business primarily on a geographic basis. The Company’s CEO is its CODM.\n\nThe Company’s reportable segments consist of the Americas, Europe, Greater China, Japan and Rest of Asia Pacific. Americas includes both North and South America. Europe includes European countries, as well as India, the Middle East and Africa. Greater China includes China mainland, Hong Kong and Taiwan. Rest of Asia Pacific includes Australia, New Zealand and those Asian countries not included in the Company’s other reportable segments. Although the reportable segments provide similar hardware and software products and similar services, each one is managed separately to better align with the location of the Company’s customers and distribution partners and the unique market dynamics of each geographic region.\n\nThe CODM uses segment net sales and operating income information to make certain decisions, such as product and service pricing, and to decide how to allocate resources related to sales activities and marketing investments. Net sales for geographic segments are generally based on the location of customers and sales through the Company’s retail stores located in those geographic locations. Operating income for each segment consists of net sales to third parties, related cost of sales, and operating expenses directly attributable to the segment. The information provided to the CODM for purposes of making decisions and assessing segment performance excludes asset information.\n\nThe following tables show information by reportable segment for 2025, 2024 and 2023 (in millions):\n\nApple Inc. | 2025 Form 10-K | 47\n\nThe following tables show net sales for 2025, 2024 and 2023 and long-lived assets as of September 27, 2025 and September 28, 2024 for countries that individually accounted for 10% or more of the respective totals, as well as aggregate amounts for the remaining countries (in millions):\n\n(1)\n\nChina includes Hong Kong and Taiwan."
+        },
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 89,
+          "content": "Apple Inc. | 2025 Form 10-K | 35\n\nThe following table shows disaggregated net sales, as well as the portion of total net sales that was previously deferred, for 2025, 2024 and 2023 (in millions):\n\n(1)\n\nServices net sales include amortization of the deferred value of services bundled in the sales price of certain products.\n\nThe Company’s proportion of net sales by disaggregated revenue source was generally consistent for each reportable segment in Note 13, “Segment Information and Geographic Data” for 2025, 2024 and 2023, except in Greater China, where iPhone revenue represented a moderately higher proportion of net sales.\n\nAs of September 27, 2025 and September 28, 2024, the Company had total deferred revenue of $\n\n13.7\n\nbillion and $\n\n12.8\n\nbillion, respectively. As of September 27, 2025, the Company expects\n\n66\n\n% of total deferred revenue to be realized in less than a year,\n\n23\n\n% within one-to-two years,\n\n9\n\n% within two-to-three years and\n\n2\n\n% in greater than three years.\n\nNote 3 –\n\nEarnings Per Share\n\nThe following table shows the computation of basic and diluted earnings per share for 2025, 2024 and 2023 (net income in millions and shares in thousands):\n\nApproximately\n\n24\n\nmillion restricted stock units (“RSUs”) were excluded from the computation of diluted earnings per share for 2023 because their effect would have been antidilutive.\n\nApple Inc. | 2025 Form 10-K | 36\n\nNote 4 –\n\nFinancial Instruments\n\nCash, Cash Equivalents and Marketable Securities\n\nThe following tables show the Company’s cash, cash equivalents and marketable securities by significant investment category as of September 27, 2025 and September 28, 2024 (in millions):\n\n(1)\n\nThe valuation techniques used to measure the fair values of the Company’s Level 2 financial instruments, which generally have counterparties with high credit ratings, are based on quoted market prices or model-driven valuations using significant inputs derived from or corroborated by observable market data.\n\n(2)"
+        },
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 75,
+          "content": "Segment Operating Performance\n\nThe following table shows net sales by reportable segment for 2025, 2024 and 2023 (dollars in millions):\n\nAmericas\n\nAmericas net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPhone and Services. The weakness in foreign currencies relative to the U.S. dollar had an unfavorable year-over-year impact on Americas net sales during 2025.\n\nEurope\n\nEurope net sales increased during 2025 compared to 2024 primarily due to higher net sales of Services, iPhone and Mac.\n\nGreater China\n\nGreater China net sales decreased during 2025 compared to 2024 primarily due to lower net sales of iPhone, partially offset by higher net sales of Mac.\n\nJapan\n\nJapan net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPhone, Services and iPad.\n\nRest of Asia Pacific\n\nRest of Asia Pacific net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPhone, Services and Mac.\n\nApple Inc. | 2025 Form 10-K | 22\n\nProducts and Services Performance\n\nThe following table shows net sales by category for 2025, 2024 and 2023 (dollars in millions):\n\n(1)\n\nServices net sales include amortization of the deferred value of services bundled in the sales price of certain products.\n\niPhone\n\niPhone net sales increased during 2025 compared to 2024 due to higher net sales of Pro models.\n\nMac\n\nMac net sales increased during 2025 compared to 2024 primarily due to higher net sales of laptops and desktops.\n\niPad\n\niPad net sales increased during 2025 compared to 2024 primarily due to higher net sales of iPad Air, iPad mini and iPad, partially offset by lower net sales of iPad Pro.\n\nWearables, Home and Accessories\n\nWearables, Home and Accessories net sales decreased during 2025 compared to 2024 primarily due to lower net sales of Accessories and Wearables.\n\nServices\n\nServices net sales increased during 2025 compared to 2024 primarily due to higher net sales from advertising, the App Store and cloud services.\n\nApple Inc. | 2025 Form 10-K | 23"
+        },
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 13,
+          "content": "The Company offers payment services, including Apple Card\n\n®\n\n, a co-branded credit card, and Apple Pay\n\n®\n\n, a cashless payment service.\n\nSegments\n\nThe Company manages its business primarily on a geographic basis. The Company’s reportable segments consist of the Americas, Europe, Greater China, Japan and Rest of Asia Pacific. Americas includes both North and South America. Europe includes European countries, as well as India, the Middle East and Africa. Greater China includes China mainland, Hong Kong and Taiwan. Rest of Asia Pacific includes Australia, New Zealand and those Asian countries not included in the Company’s other reportable segments. Although the reportable segments provide similar hardware and software products and similar services, each one is managed separately to better align with the location of the Company’s customers and distribution partners and the unique market dynamics of each geographic region.\n\nMarkets and Distribution\n\nThe Company’s customers are primarily in the consumer, small and mid-sized business, education, enterprise and government markets. The Company sells its products and resells third-party products in most of its major markets directly to customers through its retail and online stores and its direct sales force. The Company sells its services in the same markets through its various service platforms. The Company also employs a variety of indirect distribution channels, such as third-party cellular network carriers and other resellers, for the sale of its products and certain of its services. During 2025, the Company’s net sales through its direct and indirect distribution channels accounted for 40% and 60%, respectively, of total net sales.\n\nCompetition"
+        }
+      ],
+      "sources": [
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 1.0,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "Americas",
+          "Europe",
+          "Greater China",
+          "Japan",
+          "Rest of Asia Pacific"
+        ],
+        "missing_keywords": []
+      }
+    },
+    {
+      "id": "byd_2024_vs_2025_revenue_compare",
+      "question": "对比比亚迪 2024 与 2025 年年度报告，营业额分别是多少？",
+      "ground_truth": "2024 年营业额约人民币 777,102 百万元；2025 年营业额约人民币 803,965 百万元。",
+      "generated_answer": "2024年营业额：人民币 7,771 亿元 [2]\n2025年营业额：人民币 8,040 亿元 [3]",
+      "expected_answer_keywords": [
+        "777,102",
+        "803,965",
+        "2024",
+        "2025"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "comparison",
+      "difficulty": "hard",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 19,
+          "chunk_index": 0,
+          "content": "182024 比亚迪可持续发展报告\n可持续发展绩效\n我们的企业治理\n约 1,500 亿公里\n2024年比亚迪新能源汽车纯电里程\n4,272,145辆\n2024年比亚迪新能源汽车销量\n我们的环境贡献\n新能源汽车\n全年新增节能项目超410个，碳减排贡献超210,000吨二氧化碳当量\n自愿购买绿证超223万张，购买绿电约4.68亿千瓦时\n节能降碳\n我们的价值链贡献\n29,965,000元\n2024年集团捐赠支出\n30亿元\n教育慈善基金计划\n公益慈善\n95%以上\n客户满意度\n0宗\n重大的客户隐私泄露事件\n客户关系\n首次开展冲突矿产尽职调查\n强化供应商全生命周期管理\n75场\n供应商技术交流会\n2 2025年3月24日，将董事会层级战略委员会更名为战略及可持续发展委员会\n清廉治理，以信立业 绿动未来，技术领航 精工品质，匠心铸魂 才聚星河，智驱筑梦 链合共荣，责任先行 科技向善，守护明天 鉴证声明开篇 附录\n我们的员工\n员工多元化\n员工0元持股计划投入超18亿，惠及员工人数近12,000员工福利\n30.11%\n女性员工占比\n9.81%\n少数族裔占比\n员工发展 超1,600名\n博士后培养规模\n55.35小时\n员工受训人均时数\n截至报告期末，比亚迪员工总人数为：968,872，较2023年增长37.7%\n回报股东 777,102,455千元\n2024年营业收入\n40,254,346千元\n2024年归属于母公司所有者的净利润，\n利润增长率34.00%\n创新研发\n2024年研发投入54,160,964千元，占营业收入6.97%\n累计申请中国专利46,201件，境外专利13,490件\nESG治理\n成立董事会层战略及\n可持续发展委员会2\n任命首席可持续发展官CSO\n2045年\n力争实现全价值链碳中和\n气候变化目标\n以2023年为基准，2030年自身\n运营碳排放强度降低50%"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 137,
+          "chunk_index": 0,
+          "content": "137\n\n审计报告（续）\n\n安永华明（2025）审字第70013328_H01 号\n比亚迪股份有限公司\n\n三、关键审计事项（续）\n\n关键审计事项： 该事项在审计中是如何应对：\n收入确认\n比亚迪股份有限公司的营业收入主要来自于汽车、汽车\n相关产品及其他产品、手机部件、组装及其他产品。\n2024 年度，比亚迪股份有限公司合并财务报表中营业收\n入金额为人民币 7,771 亿元，较 2023 年度增加人民币\n1,748 亿元，增长率为 29%。\n\n考虑到本年收入持续增长，销售量大且涉及不同类型的\n客户以及不同的业务类型，收入的不恰当确认对财务报\n表有重大影响。因此，我们将收入确认识别为关键审计\n事项。\n\n该会计政策、重大会计判断和估计以及相关财务报表披\n露参见附注五、24、25、33，以及附注七、44。\n\n我们在审计过程中对收入确认执行的审计程序主要包括：\n 了解、评价和测试与营业收入相关的内部控制的设计及执\n行有效性；\n 获取主要的销售合同，检查和识别与控制权转移及收入确\n认相关的合同条款与条件，评价收入确认的会计政策是否\n符合企业会计准则的要求；\n 结合应收账款函证，以抽样方式向主要客户函证本期销售\n额，对未回函的样本执行替代测试；\n 就资产负债表日前后的销售商品交易选取样本，检查出库\n单和物流单据等支持性文件，评价相关收入是否被记录于\n恰当的会计期间；\n 根据不同的收入模式，选取样本，执行收入确认的细节测\n试，检查销售订单、出库单、物流单、签收单、银行流\n水、出口报关单及销售发票等支持性文件；\n 执行分析性复核程序，对比各类别收入及毛利率的变动情\n况，分析收入与毛利率变动的合理性；\n 检查报告期后是否存在重大收入冲回或大额退货的情况；\n 复核合并财务报表附注中有关营业收入的披露。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_annual_report_cn.pdf",
+          "page": 118,
+          "chunk_index": 0,
+          "content": "118\n审计报告（续）\n\n安永华明(2026)审字第70013328_H01 号\n比亚迪股份有限公司\n\n三、关键审计事项（续）\n\n关键审计事项： 该事项在审计中是如何应对：\n收入确认\n比亚迪股份有限公司的营业收入主要来自于汽车、汽车相\n关产品及其他产品、手机部件、组装及其他产品。2025 年\n度，比亚迪股份有限公司合并财务报表中营业收入金额为\n人民币 8,040 亿元，较 2024 年度增加人民币 269 亿元，增\n长率为 3%。\n\n考虑到本集团收入金额重大且涉及不同类型的客户以及不\n同的业务类型，收入的不恰当确认对财务报表有重大影\n响。因此，我们将收入确认识别为关键审计事项。\n\n该会计政策、重大会计判断和估计以及相关财务报表披露\n参见附注五、24、25、32，以及附注七、45。\n\n我们在审计过程中对收入确认执行的审计程序主要包\n括：\n 了解、评价和测试与营业收入相关的内部控制的\n设计及执行有效性；\n 获取主要的销售合同，检查和识别与控制权转移\n及收入确认相关的合同条款与条件，评价收入确\n认的会计政策是否符合企业会计准则的要求；\n 结合应收账款函证，以抽样方式向主要客户函证\n本期销售额，对未回函的样本执行替代测试；\n 就资产负债表日前后的销售商品交易选取样本，\n检查出库单和物流单据等支持性文件，评价相关\n收入是否被记录于恰当的会计期间；\n 根据不同的收入模式，选取样本， 执行收入确认\n的细节测试，检查销售订单、出库单、物流单、\n签收单、银行流水、出口报关单及销售发票等支\n持性文件；\n 执行分析性复核程序，对比各类别收入及毛利率\n的变动情况，分析收入与毛利率变动的合理性；\n 检查报告期后是否存在重大收入冲回或大额退货\n的情况；\n 复核合并财务报表附注中有关营业收入的披露。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n证券代码：002594 证券简称：比亚迪 公告编号：2025-014\n比亚迪股份有限公司 2024 年年度报告摘要\n一、重要提示\n本年度报告摘要来自年度报告全文，为全面了解本公司的经营成果、财务状况及未来发展规划，投资者应当到证监会指\n定媒体仔细阅读年度报告全文。\n所有董事均已出席了审议本报告的董事会会议。\n非标准审计意见提示\n□适用 不适用\n董事会审议的报告期利润分配预案或公积金转增股本预案\n适用 □不适用\n是否以公积金转增股本\n□是 否\n公司经本次董事会审议通过的利润分配预案为：以 3,039,065,855 为基数，向全体股东每 10 股派发现金红利 39.74 元\n（含税） ，送红股0 股（含税） ，不以公积金转增股本。\n董事会决议通过的本报告期优先股利润分配预案\n□适用 不适用\n二、公司基本情况\n1、公司简介\n股票简称 比亚迪（A 股） 、比亚迪股份（H 股） 股票代码 002594、01211、81211\n股票上市交易所 深圳证券交易所、香港联合交易所有限公司\n联系人和联系方式 董事会秘书 证券事务代表\n姓名 李黔 程燕/吴越\n办公地址 深圳市坪山区比亚迪路 3009 号 深圳市坪山区比亚迪路 3009 号\n传真 （+86）755-8420 2222 （+86）755-8420 2222\n电话 （+86）755-8988 8888-62126 （+86）755-8988 8888-62126\n电子信箱 db@byd.com db@byd.com\n2、报告期主要业务或产品简介\n本集团主要从事以新能源汽车为主的汽车业务，手机部件及组装业务，二次充电电池及光伏业务，同时利用自身的\n技术优势拓展城市轨道交通业务领域。"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 0.5,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "2024",
+          "2025"
+        ],
+        "missing_keywords": [
+          "777,102",
+          "803,965"
+        ]
+      }
+    },
+    {
+      "id": "aapl_tariff_risk",
+      "question": "What tariff-related risk did Apple discuss in its 2025 Form 10-K?",
+      "ground_truth": "Apple discussed new U.S. tariffs announced in 2025 on imports from China, India, Japan, South Korea, Taiwan, Vietnam, the EU and others, possible reciprocal tariffs, and potential impacts on supply chain, component availability, pricing and gross margin.",
+      "generated_answer": "Apple disclosed that U.S. tariffs, along with retaliatory measures by other countries, could materially and adversely affect its business, results of operations, and financial condition. Specific risks include impacts to its supply chain, availability of rare earths and other raw materials and components, product pricing, and gross margin. Trade disputes could also worsen the macroeconomic environment, leading to shifts and reductions in consumer spending and negative consumer sentiment.  \n（依据 [1]）",
+      "expected_answer_keywords": [
+        "U.S. Tariffs",
+        "China",
+        "supply chain",
+        "gross margin"
+      ],
+      "expected_sources": [
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [
+        "U.S. tariffs",
+        "China",
+        "supply chain",
+        "gross margin"
+      ],
+      "category": "risk",
+      "difficulty": "medium",
+      "language": "en",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 74,
+          "content": "Apple Inc. | 2025 Form 10-K | 21\n\nTariffs and Other Measures\n\nBeginning in the second quarter of 2025, new U.S. Tariffs were announced, including additional tariffs on imports from China, India, Japan, South Korea, Taiwan, Vietnam and the EU, among others. In response, several countries have imposed, or threatened to impose, reciprocal tariffs on imports from the U.S. and other retaliatory measures. Various modifications to the U.S. Tariffs have been announced and further changes could be made in the future, which may include additional sector-based tariffs or other measures. For example, the U.S. Department of Commerce has initiated an investigation under Section 232 of the Trade Expansion Act of 1962, as amended, into, among other things, imports of semiconductors, semiconductor manufacturing equipment, and their derivative products, including downstream products that contain semiconductors. Tariffs and other measures that are applied to the Company’s products or their components can have a material adverse impact on the Company’s business, results of operations and financial condition, including impacting the Company’s supply chain, the availability of rare earths and other raw materials and components, pricing and gross margin. The ultimate impact remains uncertain and will depend on several factors, including whether additional or incremental U.S. Tariffs or other measures are announced or imposed, to what extent other countries implement tariffs or other retaliatory measures in response, and the overall magnitude and duration of these measures. Trade and other international disputes can have an adverse impact on the overall macroeconomic environment and result in shifts and reductions in consumer spending and negative consumer sentiment for the Company’s products and services, all of which can further adversely affect the Company’s business and results of operations.\n\nSegment Operating Performance\n\nThe following table shows net sales by reportable segment for 2025, 2024 and 2023 (dollars in millions):"
+        },
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 76,
+          "content": "Apple Inc. | 2025 Form 10-K | 23\n\nGross Margin\n\nProducts and Services gross margin and gross margin percentage for 2025, 2024 and 2023 were as follows (dollars in millions):\n\nProducts Gross Margin\n\nProducts gross margin increased during 2025 compared to 2024 primarily due to favorable costs and a different mix of products, partially offset by tariff costs.\n\nProducts gross margin percentage decreased during 2025 compared to 2024 primarily due to a different mix of products and tariff costs, partially offset by other favorable costs.\n\nServices Gross Margin\n\nServices gross margin increased during 2025 compared to 2024 primarily due to higher Services net sales and a different mix of services.\n\nServices gross margin percentage increased during 2025 compared to 2024 primarily due to a different mix of services, partially offset by higher costs.\n\nThe Company’s future gross margins can be impacted by a variety of factors, as discussed in Part I, Item 1A of this Form 10-K under the heading “Risk Factors.” As a result, the Company believes, in general, gross margins will be subject to volatility and downward pressure.\n\nOperating Expenses\n\nOperating expenses for 2025, 2024 and 2023 were as follows (dollars in millions):\n\nResearch and Development\n\nThe growth in R&D expense during 2025 compared to 2024 was primarily driven by increases in headcount-related expenses and infrastructure-related costs.\n\nSelling, General and Administrative\n\nThe growth in selling, general and administrative expense during 2025 compared to 2024 was primarily driven by increases in headcount-related expenses and variable selling expenses.\n\nApple Inc. | 2025 Form 10-K | 24\n\nProvision for Income Taxes\n\nProvision for income taxes, effective tax rate and statutory federal income tax rate for 2025, 2024 and 2023 were as follows (dollars in millions):"
+        },
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 33,
+          "content": "Therefore, the Company remains subject to significant risks of supply shortages and price increases that can materially adversely affect its business, results of operations, financial condition and stock price.\n\nApple Inc. | 2025 Form 10-K | 8\n\nThe Company’s products and services may be affected from time to time by design and manufacturing defects that could materially adversely affect the Company’s business and result in harm to the Company’s reputation."
+        },
+        {
+          "source": "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+          "page": null,
+          "chunk_index": 64,
+          "content": "Apple Inc. | 2025 Form 10-K | 16\n\nGeneral Risks\n\nThe price of the Company’s stock is subject to volatility.\n\nThe Company’s stock has experienced substantial price volatility in the past and may continue to do so in the future. Additionally, the Company, the technology industry and the stock market as a whole have, from time to time, experienced extreme stock price and volume fluctuations that have affected stock prices in ways that may have been unrelated to these companies’ operating performance. Price volatility may cause the average price at which the Company repurchases its stock in a given period to exceed the stock’s price at a given point in time. The Company believes the price of its stock should reflect expectations of future growth and profitability. The Company also believes the price of its stock should reflect expectations that its cash dividend will continue at current levels or grow, and that its current share repurchase program will be fully consummated. Future dividends are subject to declaration by the Company’s Board of Directors (“Board”), and the Company’s share repurchase program does not obligate it to acquire any specific number of shares. If the Company fails to meet expectations related to future growth, profitability, dividends, share repurchases or other market expectations, the price of the Company’s stock may decline significantly, which could have a material adverse impact on investor confidence and employee retention.\n\nItem 1B. Unresolved Staff Comments\n\nNone.\n\nItem 1C. Cybersecurity\n\nThe Company’s management, led by its Head of Corporate Information Security, has overall responsibility for identifying, assessing and managing any material risks from cybersecurity threats.\n\nThe Company’s Head of Corporate Information Security leads a dedicated Information Security team of highly skilled individuals with experience across industries"
+        }
+      ],
+      "sources": [
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm",
+        "data/documents/sec_filings/AAPL/AAPL_10-K_2025-10-31_0000320193-25-000079.htm"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 0.75,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "U.S. Tariffs",
+          "supply chain",
+          "gross margin"
+        ],
+        "missing_keywords": [
+          "China"
+        ]
+      }
+    },
+    {
+      "id": "negative_tesla_2025_revenue",
+      "question": "特斯拉 2025 年年报披露的营业收入是多少？",
+      "ground_truth": "知识库当前不包含特斯拉 2025 年年报，无法根据语料回答该问题。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [],
+      "expected_sources": [],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "negative",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": true,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": true,
+        "passed": true,
+        "matched_keywords": [],
+        "missing_keywords": []
+      }
+    },
+    {
+      "id": "byd_2024_revenue_segments",
+      "question": "比亚迪 2024 年汽车业务和手机部件业务收入分别是多少？",
+      "ground_truth": "2024 年汽车、汽车相关产品及其他产品业务收入约人民币 617,382 百万元；手机部件、组装及其他产品业务收入约人民币 159,609 百万元。",
+      "generated_answer": "汽车、汽车相关产品及其他产品业务的收入约人民币617,382百万元；手机部件、组装及其他产品业务的收入约人民币159,609百万元[4]。精确数据可参考年报：汽车业务收入617,381,935,000.00元，手机部件业务收入159,608,576,000.00元[1]。",
+      "expected_answer_keywords": [
+        "617,382",
+        "159,609",
+        "汽车",
+        "手机部件"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 24,
+          "chunk_index": 0,
+          "content": "24\n凭借技术、成本、规模等各方面优势，本集团未来将继续致力于新能源汽车技术突破创新和产品推广，积极推进传统\n燃油车转向新能源汽车的产业变革。本集团将通过“7+4”全市场战略推动新能源汽车的全方位拓展，应用范围覆盖 7大常\n规领域，即私家车、公交车、出租车、环卫车、道路客运、城市商品物流、城市建筑物流，4大特殊领域，即仓储、矿山、\n港口和机场，实现新能源汽车对道路交通运输的全覆盖。同时，集团也将结合新能源汽车的优势和自主品牌强势崛起的契\n机，在全球范围内加推更多车型，进一步丰富新能源汽车产品线，提升市场份额和行业地位，推动本集团始终走在全球新\n能源汽车技术创新和产品应用的最前沿。目前，本集团新能源汽车产品已遍及全球6大洲、100多个国家和地区、超过400个\n城市。\n此外，比亚迪发挥集成创新和长期积累综合技术优势，将电动车产业链延伸到轨道交通领域，推出具有完全自主知识\n产权的中运量“云轨”和低运量“云巴”，为全球城市治理交通拥堵提供有效方案。\n四、主营业务分析\n1、概述\n参见“管理层讨论与分析”中的“一、报告期内公司所处的行业情况”相关内容。\n2、收入与成本\n（1） 营业收入构成\n单位：元\n\n2024 年 2023 年\n同比增减\n金额 占营业收入比重 金额 占营业收入比重\n营业收入合计 777,102,455,000.00 100% 602,315,354,000.00 100% 29.02%\n分行业\n日用电子器件制\n造业 159,608,576,000.00 20.54% 118,576,910,000.00 19.68% 34.60%\n交通运输设备及\n电气制造业 617,381,935,000.00 79.45% 483,453,318,000.00 80.27% 27.70%\n其他 111,944,000.00 0.01% 285,126,000.00 0.05% -60.74%\n分产品\n手机部件、组装\n及其他产品 159,608,576,000.00 20.54% 118,576,910,000.00 19.68% 34.60%\n汽车、汽车相关\n产品及其他产品 617,381,935,000.00 79.45% 483,453,318,000.00 80.27% 27.70%\n其他 111,944,000.00 0.01% 285,126,000.00 0.05% -60.74%\n分地区\n中国（包括港澳\n台地区） 555,217,682,000.00 71.45% 442,093,854,000.00 73.40% 25.59%\n境外 221,884,773,000.00 28.55% 160,221,500,000.00 26.60% 38.49%\n分销售模式\n直销 373,156,016,000.00 48.02% 291,625,025,000.00 48.42% 27.96%\n经销 403,946,439,000.00 51.98% 310,690,329,000.00 51.58% 30.02%\n（2） 占公司营业收入或营业利润 10%以上的行业、产品、地区、销售模式的情况"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n证券代码：002594 证券简称：比亚迪 公告编号：2025-014\n比亚迪股份有限公司 2024 年年度报告摘要\n一、重要提示\n本年度报告摘要来自年度报告全文，为全面了解本公司的经营成果、财务状况及未来发展规划，投资者应当到证监会指\n定媒体仔细阅读年度报告全文。\n所有董事均已出席了审议本报告的董事会会议。\n非标准审计意见提示\n□适用 不适用\n董事会审议的报告期利润分配预案或公积金转增股本预案\n适用 □不适用\n是否以公积金转增股本\n□是 否\n公司经本次董事会审议通过的利润分配预案为：以 3,039,065,855 为基数，向全体股东每 10 股派发现金红利 39.74 元\n（含税） ，送红股0 股（含税） ，不以公积金转增股本。\n董事会决议通过的本报告期优先股利润分配预案\n□适用 不适用\n二、公司基本情况\n1、公司简介\n股票简称 比亚迪（A 股） 、比亚迪股份（H 股） 股票代码 002594、01211、81211\n股票上市交易所 深圳证券交易所、香港联合交易所有限公司\n联系人和联系方式 董事会秘书 证券事务代表\n姓名 李黔 程燕/吴越\n办公地址 深圳市坪山区比亚迪路 3009 号 深圳市坪山区比亚迪路 3009 号\n传真 （+86）755-8420 2222 （+86）755-8420 2222\n电话 （+86）755-8988 8888-62126 （+86）755-8988 8888-62126\n电子信箱 db@byd.com db@byd.com\n2、报告期主要业务或产品简介\n本集团主要从事以新能源汽车为主的汽车业务，手机部件及组装业务，二次充电电池及光伏业务，同时利用自身的\n技术优势拓展城市轨道交通业务领域。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 124,
+          "chunk_index": 0,
+          "content": "1232024 比亚迪可持续发展报告\n附录Ⅰ：主要绩效指标摘要\n指标 单位 2024年\n营业收入 千元 777,102,455\n归属于母公司所有者的净利润 千元 40,254,346\n国内纳税总额 亿元 510\n经济\n指标 单位 2024年\n社区投资及公益活动\n集团捐赠支出 元 29,965,000\n员工参与志愿服务总人数 人 6,988\n员工参与志愿服务总时数 小时 41,227.76\n指标 单位 2024年\n反贪污培训\n平均每位董事接受反贪污培训场次数 场 6\n平均每位董事反贪污培训时数 小时 6\n接受反贪污培训的董事人数 人 1\n接受反贪污培训的董事占比 % 16.67\n员工反贪污培训场次数 场 737\n员工反贪污培训时数 小时 392,631.64\n接受反贪污培训的新员工占比 % 100\n商业贿赂及贪污事件\n公司员工由于腐败而被开除的人数 人 49\n业务合作伙伴由于腐败相关的违规事件而合同\n被终止或未续订的单位数量\n家 16\n产生及分配的经济价值\n间接经济影响\n合规绩效\n治理"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 3,
+          "chunk_index": 0,
+          "content": "3\n\n二零二四年是我们成立第三十周年，三十载风雨兼程，三十载砥砺前行。 作为创新型科技企业，二零二四年我\n们的研发投入约为542亿元，同比上升35.68%，累计研发投入超1,800亿元。凭借“敢想、敢干、敢坚持”的工程师\n精神和超 12 万名研发工程师的努力，比亚迪从电池、电子到新能源汽车，无一不成为行业的引领者，打破国外品牌\n统治地位，重塑全球市场新格局。\n二零二四年是我们继续高速发展的一年。 截至二零二四年十二月三十一日止年度，本集团营业额 约人民币\n777,102 百万元，同比上升 29.02%。其中汽车、汽车相关产品及其他产品业务的收入约人民币 617,382 百万元，同比\n增长 27.70%；手机部件、组装及其他产品业务的收入约人民币 159,609 百万元，同比增长 34.60%；两项业务占总收\n入的比例分别为79.45%和20.54%。母公司拥有人应占溢利约为人民币40,254百万元，同比上升34.00%，每股盈利为\n人民币 13.84 元。董事会建议派发末期股息每股人民币 3.974 元（含税）。充盈的现金储备为我们每一次业务高速发\n展提供有力支持。截至二零二四年十二月三十一日，我们的现金储备约为 154,937 百万元。\n2.1. 汽车业务\n二零二四年，我们的新能源汽车销量继续保持强劲增长，同比增长超40%，蝉联中国汽车市场车企销量冠军、中\n国汽车市场品牌销量冠军和全球新能源汽车市场销量冠军，十一月更成为全球首家达成第 1,000 万辆新能源汽车下线\n里程碑的车企。\n我们坚持“技术为王、创新为本”的发展理念，截至二零二四年十二月三十一日，我们平均每个工作日专利申\n请 45 项、专利授权 20 项，并于年内先后发布一系列重磅技术，引领行业发展趋势。年初，我们发布智能化全新战略\n“整车智能”，实现了电动化与智能化的高效融合，高阶智能驾驶辅助系统“天神之眼”亦于年内在全国范围内正式\n开通无图城市领航功能，稳居高阶智驾第一梯队。五月,我们亦推出“第五代 DM 技术”，实现全球量产最高发动机热\n效率 46.06%、全球最低百公里亏电油耗2.9L 和全球最长综合续航2,100 公里，开创油耗“2”时代。\n我们通过多品牌策略促进高质量发展，逐步完善由“比亚迪”、“方程豹”、“腾势”及“仰望”所构建的多\n品牌梯度布局，年内各品牌携手并进，推动本集团销量屡破前高。\n“比亚迪”品牌 持续夯实、强化我们在大众化市场的领导地位， 年内产品矩阵持续优化迭代并实现“电比油\n低”，同时依托“e 平台 3.0 Evo”、“第五代DM 技术”开启全新产品周期，推出多款全新车型。\n新能源个性化品牌“方程豹”于年内宣布开启整体的品牌焕新战略，落实“始于越野 不止越野”的品牌内涵，\n致力于满足更多元、更广泛用户人群的个性用车需求 。年内，“豹 5”连续五个月蝉联新能源硬派越野销量冠军，\n“豹 8”自上市后一跃成为了 40 万级新能源 SUV月度销量前三。\n新能源豪华科技品牌领先者“腾势”以科技为擎推动产品出新，成为全球首个覆盖 MPV、SUV 和轿车全品类的新\n能源豪华汽车品牌。“腾势 D9”连续两年荣获 MPV 全市场年销量第一，成为最受用户认可、喜爱的豪华 MPV；“腾势\nZ9GT”连续三个月夺得30 万起售新能源豪华轿车市场第一。\n百万级高端新能源汽车品牌“仰望”以极致技术打造高端品牌和产品，通过多项颠覆性技术的灵活组合，聚焦\n不同场景需求，打造了新能源硬派越野“仰望 U8”、纯电性能超跑“仰望 U9”、新能源旗舰轿车“仰望 U7”等多品\n类高端产品。\n我们持续加速乘用车业务全球化布局，产品深受全球消费者青睐，跻身多国新能源乘用车热销前列， 海外销量\n实现强劲增长。与此同时，我们亦通过携手众多全球优质经销商，加速海外渠道布局；推进本地化生产进程，乌兹别\n克斯坦和泰国工厂陆续投产；搭建出海船队，“EXPLORER NO.1”、“BYD CHANGZHOU”先后投入使用，助力海外业务\n行稳致远。截至二零二四年年底，我们的新能源汽车已进入全球 6 大洲、100多个国家和地区。"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 1.0,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "617,382",
+          "159,609",
+          "汽车",
+          "手机部件"
+        ],
+        "missing_keywords": []
+      }
+    },
+    {
+      "id": "byd_2024_business_scope",
+      "question": "比亚迪 2024 年报称公司主要从事哪些业务？",
+      "ground_truth": "比亚迪主要从事以新能源汽车为主的汽车业务、手机部件及组装业务、二次充电电池及光伏业务，并利用技术优势拓展城市轨道交通业务领域。",
+      "generated_answer": "比亚迪2024年年报称，公司主要从事四大业务：\n- 以新能源汽车为主的汽车业务\n- 手机部件及组装业务\n- 二次充电电池及光伏业务\n- 利用技术优势拓展的城市轨道交通业务领域\n\n依据：引用编号[1]。",
+      "expected_answer_keywords": [
+        "新能源汽车",
+        "手机部件",
+        "二次充电电池",
+        "光伏",
+        "城市轨道交通"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "summary",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n证券代码：002594 证券简称：比亚迪 公告编号：2025-014\n比亚迪股份有限公司 2024 年年度报告摘要\n一、重要提示\n本年度报告摘要来自年度报告全文，为全面了解本公司的经营成果、财务状况及未来发展规划，投资者应当到证监会指\n定媒体仔细阅读年度报告全文。\n所有董事均已出席了审议本报告的董事会会议。\n非标准审计意见提示\n□适用 不适用\n董事会审议的报告期利润分配预案或公积金转增股本预案\n适用 □不适用\n是否以公积金转增股本\n□是 否\n公司经本次董事会审议通过的利润分配预案为：以 3,039,065,855 为基数，向全体股东每 10 股派发现金红利 39.74 元\n（含税） ，送红股0 股（含税） ，不以公积金转增股本。\n董事会决议通过的本报告期优先股利润分配预案\n□适用 不适用\n二、公司基本情况\n1、公司简介\n股票简称 比亚迪（A 股） 、比亚迪股份（H 股） 股票代码 002594、01211、81211\n股票上市交易所 深圳证券交易所、香港联合交易所有限公司\n联系人和联系方式 董事会秘书 证券事务代表\n姓名 李黔 程燕/吴越\n办公地址 深圳市坪山区比亚迪路 3009 号 深圳市坪山区比亚迪路 3009 号\n传真 （+86）755-8420 2222 （+86）755-8420 2222\n电话 （+86）755-8988 8888-62126 （+86）755-8988 8888-62126\n电子信箱 db@byd.com db@byd.com\n2、报告期主要业务或产品简介\n本集团主要从事以新能源汽车为主的汽车业务，手机部件及组装业务，二次充电电池及光伏业务，同时利用自身的\n技术优势拓展城市轨道交通业务领域。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+          "page": 24,
+          "chunk_index": 0,
+          "content": "24\n凭借技术、成本、规模等各方面优势，本集团未来将继续致力于新能源汽车技术突破创新和产品推广，积极推进传统\n燃油车转向新能源汽车的产业变革。本集团将通过“7+4”全市场战略推动新能源汽车的全方位拓展，应用范围覆盖 7大常\n规领域，即私家车、公交车、出租车、环卫车、道路客运、城市商品物流、城市建筑物流，4大特殊领域，即仓储、矿山、\n港口和机场，实现新能源汽车对道路交通运输的全覆盖。同时，集团也将结合新能源汽车的优势和自主品牌强势崛起的契\n机，在全球范围内加推更多车型，进一步丰富新能源汽车产品线，提升市场份额和行业地位，推动本集团始终走在全球新\n能源汽车技术创新和产品应用的最前沿。目前，本集团新能源汽车产品已遍及全球6大洲、100多个国家和地区、超过400个\n城市。\n此外，比亚迪发挥集成创新和长期积累综合技术优势，将电动车产业链延伸到轨道交通领域，推出具有完全自主知识\n产权的中运量“云轨”和低运量“云巴”，为全球城市治理交通拥堵提供有效方案。\n四、主营业务分析\n1、概述\n参见“管理层讨论与分析”中的“一、报告期内公司所处的行业情况”相关内容。\n2、收入与成本\n（1） 营业收入构成\n单位：元\n\n2024 年 2023 年\n同比增减\n金额 占营业收入比重 金额 占营业收入比重\n营业收入合计 777,102,455,000.00 100% 602,315,354,000.00 100% 29.02%\n分行业\n日用电子器件制\n造业 159,608,576,000.00 20.54% 118,576,910,000.00 19.68% 34.60%\n交通运输设备及\n电气制造业 617,381,935,000.00 79.45% 483,453,318,000.00 80.27% 27.70%\n其他 111,944,000.00 0.01% 285,126,000.00 0.05% -60.74%\n分产品\n手机部件、组装\n及其他产品 159,608,576,000.00 20.54% 118,576,910,000.00 19.68% 34.60%\n汽车、汽车相关\n产品及其他产品 617,381,935,000.00 79.45% 483,453,318,000.00 80.27% 27.70%\n其他 111,944,000.00 0.01% 285,126,000.00 0.05% -60.74%\n分地区\n中国（包括港澳\n台地区） 555,217,682,000.00 71.45% 442,093,854,000.00 73.40% 25.59%\n境外 221,884,773,000.00 28.55% 160,221,500,000.00 26.60% 38.49%\n分销售模式\n直销 373,156,016,000.00 48.02% 291,625,025,000.00 48.42% 27.96%\n经销 403,946,439,000.00 51.98% 310,690,329,000.00 51.58% 30.02%\n（2） 占公司营业收入或营业利润 10%以上的行业、产品、地区、销售模式的情况"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 8,
+          "chunk_index": 0,
+          "content": "72024 比亚迪可持续发展报告\n 电子领域\n比亚迪电子（ 国际）有限公司2007 年于香港分拆上市（ 股票代码：00285 .HK），2020年被纳入香港恒生科技指数， 2024被纳入恒生指数， 已发展成为全球领先的高科技创新产品提供商。 依托电子信息技术、 人工智能技\n术、5G和物联网技术、 热管理技术、 新材料技术、精密模具技术和数字化制造技术等核心优势 ，为全球客户提供一站式产品解决方案。 电子领域业务广泛， 涉及智能手机、 平板计算机、 新能源汽车、 AIDC（AI服务器、热管\n理、电源管理等）、智能家居、游戏硬件、无人机、3D打印机、物联网、机器人、通信设备等多元化的市场领域。\n 新能源领域\n比亚迪作为新能源整体解决方案提供商， 拥有电池、太阳能、储能等新能源产品， 打通能源从获取、 存储到应用的全产业链各环节。 比亚迪新能源产品覆盖消费类3C 电池、动力电池、光储一体化等领域， 拥有完整产业链， 牢牢\n占据行业前列，在 2024年累计装机总量194 .7GWh。刀片电池具有高安全 、长寿命、高续航等特点， 不含镍、钴金属，通过行业最严苛的单体电池针刺试验 ，获得市场高度认可 ，几乎以一己之力把磷酸铁锂电池重新拉回行业\n发展正道。太阳能和储能方案， 现已服务德国、 日本、瑞士、加拿大、澳大利亚和南非等新能源发达市场和新兴市场 。\n 轨道交通领域\n比亚迪发挥集成创新优势， 将电动车产业链延伸到轨道交通领域， 推出具有完全自主知识产权的中运量云轨和小运量云巴， 填补轨道交通技术产业空白。 2021年，全球首条无人驾驶云巴市政示范线在重庆开通， 拉开商业化应用\n序幕。 2022年，深圳首条云巴市政线在坪山开通， 进一步形成先行示范。 2023年，全国首条旅游观光云巴线在长沙开通， 成为推进旅游产业现代化重要范例。 2024年，西安首条云巴示范线开通运营， 成为全国低运量交通系统\n典型应用案例。云巴系统的研发应用， 为我国城市交通可持续发展注入强劲动力， 为全球城市交通治理贡献解决方案 。\n三十年来，比亚迪通过强有力的市场布局、 坚定推动全球可持续发展的战略举措， 赢得“扎耶德未来能源奖”“ 联合国能源特别奖” 以及《财富》杂志“改变世界的企业 ”等系列赞誉。比亚迪坚持踏踏实实办实业、 心无旁骛搞\n创造，持续用技术创新满足人们对美好生活的向往。\n 汽车领域\n比亚迪掌握电池、 电机、电控等新能源汽车全产业链核心技术， 从自主创新到全面的开放创新， 持续引领全球新能源汽车变革。 经过长时间坚守， 比亚迪凭借刀片电池、 DM-i超级混动、 e平台3.0、CTB电池车身一体化 、易四\n方、云辇系统、DMO超级混动越野平台等颠覆性技术的接连推出 ，迎来前所未有的发展机遇 。2024年，比亚迪累计销售新能源汽车427 万辆，同比增长41 %，再度蝉联全球新能源汽车销量冠军 。\n72024 比亚迪可持续发展报告"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+          "page": 7,
+          "chunk_index": 0,
+          "content": "62024 比亚迪可持续发展报告\n关于我们\n比亚迪成立于1994 年11月 18日，总部位于广东省深圳市， 业务横跨汽车、 电子、新能源和轨道交通四大产业 ，是在香港联交所和深圳证券交易所上市的世界500强企业。 比亚迪扛起时代责任和使命， 坚定拥抱汽车电动化、 智能\n化浪潮，打造中国和全球的新能源汽车龙头， 走出一条绿色创新发展之路。\n比亚迪的使命是“ 用技术创新， 满足人们对美好生活的向往” 。我们把推动实现三大绿色梦想、 持续改善全球生态环境、 造福全人类视为最重要的社会责任。 比亚迪高度崇尚技术 、鼓励创新，把技术作为公司最核心的竞争力，\n把创新作为推动公司持续发展的根本动力。 竞争、务实、激情、创新是比亚迪的企业文化 。\n公司业务\n比亚迪积极拓展全球市场 ，业务遍布亚太地区、 欧洲地区、中东非地区及美洲地区。\n亚太\n中国大陆 泰国 中国澳门 澳大利亚 新西兰\n马来西亚 印尼 新加坡 越南 中国香港\n日本 ……\n巴西 乌拉圭 墨西哥 哥斯达黎加 哥伦比亚 巴拉圭\n智利 巴拿马 厄瓜多尔 多米尼加 ……\n美洲\n中东非\n沙特阿拉伯 阿曼 南非 毛里求斯 阿拉伯联合酋长国 卡塔尔 摩洛哥 科威特 约旦 突尼斯 ……\n欧洲\n英国 意大利 瑞典 挪威 法国 西班牙 爱尔兰 德国 匈牙利 奥地利 ……\n62024 比亚迪可持续发展报告"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_summary_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf",
+        "data/documents/byd_chinese/BYD_2024_sustainability_report_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 1.0,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "新能源汽车",
+          "手机部件",
+          "二次充电电池",
+          "光伏",
+          "城市轨道交通"
+        ],
+        "missing_keywords": []
+      }
+    },
+    {
+      "id": "byd_info_disclosure_confidentiality",
+      "question": "比亚迪信息披露事务管理制度对未公开重大信息的保密有什么要求？",
+      "ground_truth": "制度要求信息知情人员在未公开重大信息公告前负有保密责任，不得向第三人披露，不得利用内幕信息买卖公司证券或建议他人买卖，并应将知情者控制在最小范围内。",
+      "generated_answer": "根据比亚迪信息披露事务管理制度，对未公开重大信息的保密要求如下：\n\n- **保密义务与知情范围控制**：信息知情人员在该信息未公开披露前负有保密责任，不得向第三方披露，并应将知情者控制在最小范围内。不得利用内幕信息买卖公司证券、泄露信息或建议他人买卖[4]。\n- **责任主体**：董事长、总裁为公司信息保密工作第一责任人，副总裁及其他高级管理人员为分管业务范围的第一责任人，各部门和控股子公司负责人为本单位的第一责任人[4]。\n- **知情人范围**：包括公司及控股子公司的董监高、持股5%以上股东及其董监高、交易对手方及关联方、参与重大事项筹划等环节的内外部人员、因职务知悉信息的财务及内审人员等[4]。\n- **签署保密协议**：必要时公司应与信息知情人员签署保密协议，约定其对未公开信息严格保密[4]。\n- **文件资料保密**：在未对外公告前，寄送给董事的各种文件资料（包括会议文件、公告草稿等）均须严格保密[4]。\n- **对外发布信息审查**：涉及重大决策、财务数据等信息披露内容，在接受媒体采访或在媒体上登载宣传文稿前，须由董事会办公室审查并报董事会秘书核准[4]。",
+      "expected_answer_keywords": [
+        "保密责任",
+        "第三人披露",
+        "买卖公司证券",
+        "最小范围"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "policy",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_investor_visit_reception_policy_cn.pdf",
+          "page": 5,
+          "chunk_index": 0,
+          "content": "5\n第二十六条 公司在股东会上不得披露、泄露未公开重大信息。如果出现向\n股东通报的事件属于未公开重大信息情形的，应当将该通报事件与股东会决议公\n告同时披露。\n第二十七条 投资者关系部应在相关人员接受投资者采访和调研后做好书面\n记录，并妥善保管。\n第二十八条 公司在投资者来访接待工作中一旦以任何方式发布了依法应披\n露的内幕信息，将及时向深圳证券交易所报告，并在下一交易日开市前进行正式\n披露。\n第六章 附则\n第二十九条 本制度未尽事宜，依照国家有关法律、法规、规范性文件以及\n公司章程的有关规定执行。\n第三十条 本制度与有关法律、法规、规范性文件以及公司章程的有关规定\n不一致的，以有关法律、法规、规范性文件以及公司章程的规定为准。\n第三十一条 本制度由公司董事会负责解释。\n第三十二条 本制度自公司董事会审议通过之日起实施，修改时亦同。公司\n于 2021 年 8 月 27 日经第七届董事会第十二次会议审议通过的《比亚迪股份有限\n公司特定对象来访接待工作管理制度》同日废止。\n比亚迪股份有限公司\n2025 年 10 月 30 日\n附：一、《预约须知》\n二、《预约登记单》\n三、《承诺书》"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "1\n信息披露事务管理制度\n第一章 总则\n第一条 为规范比亚迪股份有限公司（以下简称“公司”）的信息披露行\n为，加强信息披露事务管理，促进公司规范运作，维护公司股东、债权人及其\n他利益相关人的合法权益，根据《中华人民共和国公司法》、《中华人民共和\n国证券法》（以下简称“《证券法》”）、《上市公司信息披露管理办法》、\n《深圳证券交易所股票上市规则》、《深圳证券交易所上市公司自律监管指引\n第1号——主板上市公司规范运作》、《香港联合交易所有限公司证券上市规\n则》、《股价敏感资料披露指引》以及《比亚迪股份有限公司章程》及其他法\n律、法规及规范性文件的规定，结合公司实际情况，特制定本制度。\n第二条 本制度对公司股东、全体董事、董事会秘书等高级管理人员和公司\n（含其分公司）、其全资或控股子公司，及其相关人员有约束力。\n第三条 本制度所称“信息”是指所有对公司证券及其衍生品种的交易价格可\n能产生较大影响而投资者尚未得知的重大事件，以及证券监管机构、深圳证券\n交易所（以下简称“深交所”）或香港联合交易所有限公司（以下简称“港交\n所”）要求披露的其他信息。\n本制度所称“及时”是指自起算日起或者触及披露时点的两个交易日内。\n“信息披露”是指在规定的时间内、在规定的媒体上、以规定的方式向社会\n公众公布上述定义的信息，并按有关规定及时报送证券监管机构、深交所或港\n交所审查或备案。信息披露文件主要包括招股说明书、募集说明书、上市公告\n书、定期报告和临时报告等。\n第二章 信息披露的基本原则\n第四条 信息披露是公司作为上市公司的持续责任。公司及其董事、高级管\n理人员应当忠实、勤勉地履行职责，保证披露信息的真实、准确、完整、及\n时、公平。\n第五条 公司信息披露应体现公开、公正、公平对待所有股东的原则，根据\n境内外监管规定，向境内外所有投资者同时公开披露信息。向境内投资者披露"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_insider_information_management_policy_cn.pdf",
+          "page": 1,
+          "chunk_index": 0,
+          "content": "内幕信息知情人管理制度\n第一章 总则\n第一条 为规范比亚迪股份有限公司（以下简称“公司”）内幕信息管理，加\n强内幕信息保密工作，维护公司信息披露的公开、公平、公正原则，保护广大投\n资者的合法权益，根据《中华人民共和国公司法》（以下简称“《公司法》”）、\n《中华人民共和国证券法》（以下简称“《证券法》”）、《上市公司信息披露\n管理办法》、《上市公司监管指引第 5 号——上市公司内幕信息知情人登记管理\n制度》、《深圳证券交易所股票上市规则》（以下简称“《股票上市规则》”）、\n《香港联合交易所有限公司证券上市规则》、《比亚迪股份有限公司公司章程》\n（以下简称“《公司章程》”）及《比亚迪股份有限公司信息披露管理制度》（以\n下简称“《信息披露管理制度》”）等有关法律、法规及规范性文件的规定，结\n合公司实际情况，特制定本制度。\n第二条 上市公司董事会应当按照《上市公司监管指引第 5 号——上市公司\n内幕信息知情人登记管理制度》以及证券交易所相关规则要求及时登记和报送内\n幕信息知情人档案，并保证内幕信息知情人档案真实、准确和完整，董事长为主\n要责任人。董事会秘书负责办理上市公司内幕信息知情人的登记入档和报送事宜。\n董事长与董事会秘书应当对内幕信息知情人档案的真实、准确和完整签署书面确\n认意见。\n第三条 未经董事会批准同意，公司任何部门和个人不得向外界泄露、报道、\n传送涉及公司的内幕信息和信息披露内容。\n第四条 公司董事、高级管理人员及公司各部门、分公司、子公司负责人都\n应做好内幕信息的保密工作，应积极配合董事会秘书做好内幕信息知情人的登记、\n报备工作，内幕信息知情人负有保密责任，在内幕信息依法披露前，不得公开或\n者泄露该信息，不得利用内幕信息买卖公司股票及其衍生品，不得进行内幕交易\n或配合他人操纵股票交易价格。"
+        },
+        {
+          "source": "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf",
+          "page": 14,
+          "chunk_index": 0,
+          "content": "14\n第七章 未公开信息的保密制度\n第五十七条 信息知情人员对本制度第三章所列的公司未公开重大信息没有\n公告前，对其知晓的信息负有保密责任，不得在该等信息公开披露之前向第三\n人披露，并应将该等信息的知情者控制在最小范围内，也不得利用该等内幕信\n息买卖公司的证券，或者泄露该信息，或者建议他人买卖该证券。内幕交易行\n为给投资者造成损失的，行为人应当依法承担赔偿责任。前述知情人员包括但\n不限于：\n（一）公司及其控股子公司的董事、监事、高级管理人员；\n（二）公司控股股东、实际控制人及其董事、监事、高级管理人员；\n（三）持有公司5%以上股份的股东及其董事、监事、高级管理人员；\n（四）交易对手方和其关联方及其董事、监事、高级管理人员；\n（五）参与重大事项筹划、论证、决策等环节的公司内部或外部人员；\n（六）由于所任公司职务而知悉内幕信息的财务人员、内部审计人员、信\n息披露事务工作人员及其他人员；\n（七）会计师事务所、律师事务所、财务顾问、保荐机构、资信评级机构\n等证券服务机构的从业人员；\n（八）由于亲属关系、业务往来关系等原因知悉公司内幕信息的人员；\n（九）依法从公司获取有关内幕信息的外部单位人员；\n（十）法律、法规、规章以及规范性文件规定的其他内幕信息知情人。\n第五十八条 公司必要时应与信息知情人员签署保密协议，约定对其了解和\n掌握的公司未公开信息予以严格保密，不得在该等信息公开披露之前向第三人\n披露。\n第五十九条 公司董事长、总裁为公司信息保密工作的第一责任人，副总裁\n及其他高级管理人员为分管业务范围保密工作的第一责任人，各部门和各控股\n子公司负责人为各部门、各公司保密工作的第一责任人。\n第六十条 公司寄送给董事的各种文件资料，包括但不限于会议文件、公告\n草稿等，在未对外公告前，董事均须予以严格保密。\n第六十一条 公司在媒体上登载宣传文稿以及公司相关部门和人员接受媒体\n采访时，如有涉及公司重大决策、财务数据以及其他属于信息披露范畴的内\n容，应由董事会办公室审查同意并报董事会秘书核准。\n第六十二条 公司向外部信息使用人、大股东提供未公开信息，须经董事长"
+        }
+      ],
+      "sources": [
+        "data/documents/byd_chinese/BYD_2025_investor_visit_reception_policy_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_insider_information_management_policy_cn.pdf",
+        "data/documents/byd_chinese/BYD_2025_information_disclosure_management_policy_cn.pdf"
+      ],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "versioned_indexing_enabled": false,
+        "effective_index_version": "smoke-index",
+        "effective_index_dir": "data",
+        "effective_chroma_dir": "data/chroma",
+        "effective_bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "effective_parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T18:42:09.514357"
+      },
+      "metrics": {
+        "keyword_coverage": 0.75,
+        "citation_present": true,
+        "answer_non_empty": true,
+        "unknown_answer": false,
+        "negative_case_pass": null,
+        "passed": true,
+        "matched_keywords": [
+          "保密责任",
+          "买卖公司证券",
+          "最小范围"
+        ],
+        "missing_keywords": [
+          "第三人披露"
+        ]
+      }
+    }
+  ],
+  "ragas": {
+    "enabled": true,
+    "required": true,
+    "metrics": {
+      "faithfulness": 0.8679487179487179,
+      "answer_relevancy": 0.7925990927190243,
+      "context_precision": 0.7444444444031019,
+      "context_recall": 0.75
+    },
+    "metric_names": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall"
+    ],
+    "target_thresholds": {
+      "faithfulness": 0.85,
+      "answer_relevancy": 0.8,
+      "context_precision": 0.75,
+      "context_recall": 0.8
+    },
+    "dataset_schema": [
+      "question",
+      "answer",
+      "contexts",
+      "ground_truth"
+    ],
+    "judge_config": {
+      "base_url": "https://api.deepseek.com",
+      "judge_model": "deepseek-v4-pro",
+      "embedding_model": "bge-m3",
+      "judge_source": "business_qa_openai_config"
+    }
+  }
+}

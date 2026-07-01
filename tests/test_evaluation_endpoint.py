@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -66,8 +67,16 @@ def test_retrieval_comparison_report_endpoint(monkeypatch):
             "dataset_path": "data/eval/sample_eval.jsonl",
             "top_k": 5,
             "variants": [
-                {"variant": "dense", "summary": {"cases": 2, "hit_rate_at_k": 0.5}},
-                {"variant": "hybrid", "summary": {"cases": 2, "hit_rate_at_k": 1.0}},
+                {
+                    "variant": "dense",
+                    "summary": {"cases": 2, "hit_rate_at_k": 0.5},
+                    "groups": {"language": {"zh": {"cases": 1, "hit_rate_at_k": 1.0}}},
+                },
+                {
+                    "variant": "hybrid",
+                    "summary": {"cases": 2, "hit_rate_at_k": 1.0},
+                    "groups": {"language": {"zh": {"cases": 1, "hit_rate_at_k": 1.0}}},
+                },
             ],
         },
     )
@@ -79,6 +88,7 @@ def test_retrieval_comparison_report_endpoint(monkeypatch):
     payload = response.json()
     assert payload["available"] is True
     assert payload["variants"][1]["variant"] == "hybrid"
+    assert payload["variants"][0]["groups"]["language"]["zh"]["hit_rate_at_k"] == 1.0
 
 
 def test_ask_endpoint_can_return_debug_trace(monkeypatch):
@@ -263,19 +273,29 @@ def test_corpus_status_endpoint_reports_index_files(tmp_path: Path, monkeypatch)
             parent_corpus_path=parent_path,
             chroma_dir=chroma_dir,
             chroma_collection="test_collection",
+            document_index_version="local-index-v1",
+            versioned_indexing_enabled=False,
         ),
     )
     monkeypatch.setattr(
         routes,
         "chroma_collection_status",
-        lambda persist_dir, collection_name: routes.ChromaCorpusStatusResponse(
-            persist_dir=str(persist_dir),
-            collection_name=collection_name,
-            exists=True,
-            chunk_count=2,
-            size_bytes=128,
-        ),
+        lambda persist_dir, collection_name: {
+            "persist_dir": str(persist_dir),
+            "collection_name": collection_name,
+            "exists": True,
+            "chunk_count": 2,
+            "size_bytes": 128,
+            "updated_at": None,
+            "error": None,
+        },
     )
+
+    status = routes.build_corpus_status()
+    json.dumps(status, ensure_ascii=False)
+    assert isinstance(status["bm25_corpus"], dict)
+    assert isinstance(status["parent_corpus"], dict)
+    assert isinstance(status["chroma"], dict)
 
     client = TestClient(app)
     response = client.get("/corpus/status")
@@ -286,4 +306,56 @@ def test_corpus_status_endpoint_reports_index_files(tmp_path: Path, monkeypatch)
     assert payload["chunk_count"] == 2
     assert payload["parent_chunk_count"] == 1
     assert payload["bm25_ready"] is True
+    assert payload["ready"] is True
+    assert payload["readiness_reason"] == "ready"
     assert payload["chroma_collection_name"] == "test_collection"
+
+
+def test_corpus_status_reports_unready_empty_versioned_index(tmp_path: Path, monkeypatch):
+    from app.api import routes
+
+    documents_dir = tmp_path / "documents"
+    documents_dir.mkdir()
+    (documents_dir / "guide.md").write_text("RAG guide", encoding="utf-8")
+    index_root = tmp_path / "indexes"
+    active_path = index_root / "active_version.txt"
+    active_path.parent.mkdir(parents=True)
+    active_path.write_text("index-v1\n", encoding="utf-8")
+    chroma_dir = index_root / "index-v1" / "chroma"
+    chroma_dir.mkdir(parents=True)
+
+    monkeypatch.setattr(
+        routes,
+        "get_settings",
+        lambda: SimpleNamespace(
+            documents_dir=documents_dir,
+            chroma_collection="test_collection",
+            chroma_dir=tmp_path / "legacy" / "chroma",
+            bm25_corpus_path=tmp_path / "legacy" / "bm25.jsonl",
+            parent_corpus_path=tmp_path / "legacy" / "parents.jsonl",
+            index_root_dir=index_root,
+            active_index_version_path=active_path,
+            document_index_version="configured",
+            versioned_indexing_enabled=True,
+        ),
+    )
+    monkeypatch.setattr(
+        routes,
+        "chroma_collection_status",
+        lambda persist_dir, collection_name: {
+            "persist_dir": str(persist_dir),
+            "collection_name": collection_name,
+            "exists": True,
+            "chunk_count": 0,
+            "size_bytes": 0,
+            "updated_at": None,
+            "error": None,
+        },
+    )
+
+    status = routes.build_corpus_status()
+
+    assert status["active_index_version"] == "index-v1"
+    assert status["index_dir"] == str(index_root / "index-v1")
+    assert status["ready"] is False
+    assert status["readiness_reason"] == "missing_chroma_chunks"

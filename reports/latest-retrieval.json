@@ -1,10 +1,10 @@
 {
   "kind": "retrieval-comparison-pointer",
-  "report_path": "reports/retrieval-comparison-phase6-local.json",
+  "report_path": "reports/retrieval-comparison-20260623-190622.json",
   "dataset_path": "data/eval/sample_eval.jsonl",
   "top_k": 5,
   "case_count": 60,
   "positive_cases": 52,
   "negative_cases": 8,
-  "notes": "Pointer to the latest checked-in retrieval comparison report used by docs/interview-guide.md and docs/evaluation.md."
+  "notes": "Pointer to the latest runtime-aligned retrieval comparison report used by docs/interview-guide.md and docs/evaluation.md."
 }

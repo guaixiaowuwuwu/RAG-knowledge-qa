@@ -6,6 +6,7 @@ import jieba
 from rank_bm25 import BM25Okapi
 
 from app.rag.documents import RetrievedDocument
+from app.security.acl import RetrievalAccessFilter
 
 
 ASCII_TOKEN_RE = re.compile(r"[A-Za-z0-9_]+")
@@ -49,7 +50,12 @@ class BM25Retriever:
             )
         return cls(documents)
 
-    def search(self, query: str, top_k: int) -> list[RetrievedDocument]:
+    def search(
+        self,
+        query: str,
+        top_k: int,
+        access_filter: RetrievalAccessFilter | None = None,
+    ) -> list[RetrievedDocument]:
         if self.index is None or not self.documents:
             return []
 
@@ -62,11 +68,13 @@ class BM25Retriever:
             reverse=True,
         )
         results: list[RetrievedDocument] = []
-        for index, score in ranked[:top_k]:
+        for index, score in ranked:
             token_overlap = query_token_set.intersection(self.tokenized_corpus[index])
             if score <= 0 and not token_overlap:
                 continue
             document = self.documents[index]
+            if access_filter is not None and not access_filter.can_access_metadata(document.metadata):
+                continue
             results.append(
                 RetrievedDocument(
                     id=document.id,
@@ -76,4 +84,6 @@ class BM25Retriever:
                     score=float(score),
                 )
             )
+            if len(results) >= top_k:
+                break
         return results

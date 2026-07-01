@@ -129,3 +129,26 @@ export function hitLabel(hit, isNegative = false) {
 
   return hit ? "命中" : "未命中";
 }
+
+export function groupedMetricRows(groups, dimensions = ["language", "category", "difficulty", "is_negative"]) {
+  if (!groups || typeof groups !== "object") {
+    return [];
+  }
+
+  const rows = [];
+  for (const dimension of dimensions) {
+    const values = groups[dimension];
+    if (!values || typeof values !== "object") {
+      continue;
+    }
+
+    for (const [label, summary] of Object.entries(values)) {
+      rows.push({
+        dimension,
+        label,
+        summary: summary ?? {},
+      });
+    }
+  }
+  return rows;
+}

@@ -88,6 +88,11 @@ def build_answer_eval_record(case: EvalCase, answer: Answer, model_config: dict)
         "generated_answer": answer.answer,
         "expected_answer_keywords": case.expected_answer_keywords,
         "expected_sources": case.expected_sources,
+        "expected_pages": case.expected_pages,
+        "expected_chunk_keywords": case.expected_chunk_keywords,
+        "category": case.category,
+        "difficulty": case.difficulty,
+        "language": case.language,
         "is_negative": case.is_negative,
         "retrieved_contexts": [
             {

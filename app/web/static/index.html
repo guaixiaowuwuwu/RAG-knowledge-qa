@@ -75,6 +75,9 @@
             <div class="metric-grid" id="evaluationMetrics">
               <span>等待评估</span>
             </div>
+            <div class="grouped-metrics-wrap" id="evaluationGroups">
+              <p class="muted">评估完成后展示分组指标。</p>
+            </div>
             <div class="report-meta" id="evaluationReportMeta"></div>
           </section>
 
@@ -118,6 +121,11 @@
               <span id="answerState">等待问题</span>
             </div>
             <div class="answer-output" id="answerOutput">答案会实时显示在这里。</div>
+            <div class="feedback-bar" id="feedbackBar">
+              <button class="secondary-button" id="feedbackGoodButton" type="button" disabled>有帮助</button>
+              <button class="secondary-button" id="feedbackBadButton" type="button" disabled>不准确</button>
+              <span id="feedbackState">等待审计记录</span>
+            </div>
           </section>
 
           <section class="sources-panel">

@@ -25,6 +25,7 @@ class AskResponse(BaseModel):
     answer: str
     sources: list[SourceResponse]
     debug: dict | None = None
+    session_id: str | None = None
 
 
 class IngestResponse(BaseModel):
@@ -32,6 +33,9 @@ class IngestResponse(BaseModel):
     indexed_chunks: int
     skipped: list[str]
     errors: dict[str, str]
+    job_id: str | None = None
+    status: str | None = None
+    target_index_version: str | None = None
 
 
 class EvaluationSummaryResponse(BaseModel):
@@ -45,6 +49,10 @@ class EvaluationSummaryResponse(BaseModel):
     precision_at_k: float = 0.0
     ndcg_at_k: float = 0.0
     negative_rejection_rate: float = 0.0
+    page_hit_rate_at_k: float = 0.0
+    evidence_keyword_recall_at_k: float = 0.0
+    evidence_strict_hit_at_k: float = 0.0
+    refusal_reasons: dict[str, int] = {}
 
 
 class EvaluationRetrievedDocumentResponse(BaseModel):
@@ -63,10 +71,23 @@ class EvaluationCaseResponse(BaseModel):
     ground_truth: str = ""
     expected_sources: list[str]
     expected_answer_keywords: list[str] = []
+    expected_pages: dict[str, list[int]] = {}
+    expected_chunk_keywords: list[str] = []
+    evidence_notes: str = ""
+    category: str = ""
+    difficulty: str = ""
+    language: str = ""
     retrieved_sources: list[str]
     retrieved: list[EvaluationRetrievedDocumentResponse] = []
     hit: bool
     is_negative: bool = False
+    page_hit: bool | None = None
+    evidence_keyword_matches: list[str] = []
+    evidence_keyword_misses: list[str] = []
+    evidence_keyword_recall: float | None = None
+    evidence_strict_hit: bool | None = None
+    refusal_reason: str | None = None
+    confidence: dict = {}
 
 
 class EvaluationReportResponse(BaseModel):
@@ -76,6 +97,7 @@ class EvaluationReportResponse(BaseModel):
     top_k: int | None = None
     config: dict = {}
     summary: EvaluationSummaryResponse
+    groups: dict[str, dict[str, EvaluationSummaryResponse]] = {}
     cases: list[EvaluationCaseResponse]
 
 
@@ -121,6 +143,10 @@ class ChromaCorpusStatusResponse(BaseModel):
 
 class CorpusStatusResponse(BaseModel):
     documents_dir: str
+    active_index_version: str | None = None
+    index_dir: str | None = None
+    ready: bool
+    readiness_reason: str | None = None
     document_count: int
     chunk_count: int
     parent_chunk_count: int
@@ -129,3 +155,100 @@ class CorpusStatusResponse(BaseModel):
     bm25_corpus: JsonlCorpusStatusResponse
     parent_corpus: JsonlCorpusStatusResponse
     chroma: ChromaCorpusStatusResponse
+
+
+class AuditSessionResponse(BaseModel):
+    id: str
+    tenant_id: str
+    user_id_hash: str
+    source: str
+    index_version: str | None = None
+    question_hash: str
+    redacted_question: str
+    answer_summary: str
+    refusal_reason: str | None = None
+    latency_ms: float | None = None
+    token_usage: dict | None = None
+    created_at: str
+
+
+class AuditSourceResponse(BaseModel):
+    source_path: str
+    page: int | None = None
+    chunk_id: str | None = None
+    chunk_index: int | None = None
+    document_version: str | None = None
+
+
+class AuditFeedbackResponse(BaseModel):
+    id: int
+    session_id: str
+    tenant_id: str
+    user_id_hash: str
+    rating: int
+    tags: list[str] = Field(default_factory=list)
+    comment: str | None = None
+    created_at: str
+
+
+class AuditSessionListResponse(BaseModel):
+    sessions: list[AuditSessionResponse]
+
+
+class AuditSessionDetailResponse(BaseModel):
+    session: AuditSessionResponse
+    sources: list[AuditSourceResponse]
+    feedback: list[AuditFeedbackResponse]
+
+
+class FeedbackRequest(BaseModel):
+    session_id: str = Field(min_length=1)
+    rating: int = Field(ge=-1, le=1)
+    tags: list[str] = Field(default_factory=list, max_length=10)
+    comment: str | None = Field(default=None, max_length=1000)
+
+
+class FeedbackResponse(BaseModel):
+    feedback_id: int
+    session_id: str
+
+
+class IngestionJobCreateRequest(BaseModel):
+    input_path: str | None = None
+    target_index_version: str | None = None
+
+
+class IngestionJobResponse(BaseModel):
+    id: str
+    tenant_id: str
+    requested_by: str
+    status: str
+    input_path: str
+    target_index_version: str
+    error: str | None = None
+    started_at: str | None = None
+    finished_at: str | None = None
+    created_at: str | None = None
+    updated_at: str | None = None
+
+
+class IndexVersionResponse(BaseModel):
+    version: str
+    index_dir: str
+    is_active: bool
+    exists: bool
+    bm25_count: int
+    parent_count: int
+    chroma_exists: bool
+    updated_at: str | None = None
+    job_status: str | None = None
+
+
+class IndexVersionListResponse(BaseModel):
+    active_version: str
+    indexes: list[IndexVersionResponse]
+
+
+class IndexActivationResponse(BaseModel):
+    version: str
+    active_version: str

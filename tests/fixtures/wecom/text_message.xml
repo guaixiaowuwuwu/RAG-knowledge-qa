@@ -1,0 +1,8 @@
+<xml>
+  <ToUserName><![CDATA[agent]]></ToUserName>
+  <FromUserName><![CDATA[alice]]></FromUserName>
+  <CreateTime>1700000000</CreateTime>
+  <MsgType><![CDATA[text]]></MsgType>
+  <Content><![CDATA[制度是什么？]]></Content>
+  <MsgId>1</MsgId>
+</xml>

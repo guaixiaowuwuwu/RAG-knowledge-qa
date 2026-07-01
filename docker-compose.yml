@@ -11,16 +11,43 @@ services:
       CHROMA_DIR: /app/data/chroma
       BM25_CORPUS_PATH: /app/data/chroma/bm25_corpus.jsonl
       PARENT_CORPUS_PATH: /app/data/chroma/parent_corpus.jsonl
+      INDEX_ROOT_DIR: /app/data/indexes
+      ACTIVE_INDEX_VERSION_PATH: /app/data/indexes/active_version.txt
+      INGESTION_MODE: ${INGESTION_MODE:-sync}
       REDIS_URL: redis://redis:6379/0
     volumes:
       - ./data/documents:/app/data/documents
       - ./data/chroma:/app/data/chroma
+      - ./data/indexes:/app/data/indexes
+      - ./data/runtime:/app/data/runtime
       - ./reports:/app/reports
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
+
+  worker:
+    build: .
+    image: rag-knowledge-qa:local
+    command: ["python", "-m", "scripts.worker"]
+    env_file:
+      - .env
+    environment:
+      DOCUMENTS_DIR: /app/data/documents
+      CHROMA_DIR: /app/data/chroma
+      BM25_CORPUS_PATH: /app/data/chroma/bm25_corpus.jsonl
+      PARENT_CORPUS_PATH: /app/data/chroma/parent_corpus.jsonl
+      INDEX_ROOT_DIR: /app/data/indexes
+      ACTIVE_INDEX_VERSION_PATH: /app/data/indexes/active_version.txt
+      INGESTION_MODE: async
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./data/documents:/app/data/documents
+      - ./data/chroma:/app/data/chroma
+      - ./data/indexes:/app/data/indexes
+      - ./data/runtime:/app/data/runtime
+      - ./reports:/app/reports
 
   redis:
     image: redis:7-alpine

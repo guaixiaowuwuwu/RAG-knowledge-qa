@@ -61,7 +61,58 @@ flowchart LR
 
 - `POST /ask`：返回完整 JSON 答案和引用。
 - `POST /ask/stream`：通过 SSE 流式返回 token，结束时返回引用列表。
+- 企业微信 callback：验签后映射企业微信用户为 `RequestContext`，再调用同一套权限过滤 RAG 链路。
 - 前端静态页面：支持健康检查、重建索引、运行评估、流式提问和引用查看。
+
+## 企业试点链路
+
+```mermaid
+flowchart LR
+    A["WeCom user or Web/API caller"] --> B["Auth and RequestContext"]
+    B --> C["Tenant, user, departments, roles, permission version"]
+    C --> D["ACL-aware retrieval"]
+    D --> E["RAG answer or safe refusal"]
+    E --> F["Audit session and sources"]
+    F --> G["Feedback and admin audit APIs"]
+    D --> H["Metrics and JSON request logs"]
+```
+
+权限过滤发生在多个位置：入库时写入 ACL metadata，dense/BM25 候选按 tenant 和 ACL 过滤，parent hydration 再次校验父块权限，最终 prompt、sources、debug trace 和 cache key 都只使用允许访问的内容。
+
+### 身份、权限、企业微信和审计
+
+```mermaid
+flowchart TB
+    A["Web/API request"] --> B["get_request_context"]
+    C["WeCom callback"] --> D["Signature verification and decrypt"]
+    D --> E["WeCom user mapping"]
+    E --> F["RequestContext source=wecom"]
+    B --> G["RequestContext source=local/api_key"]
+    F --> H["require_authenticated or require_admin"]
+    G --> H
+    H --> I["RetrievalAccessFilter"]
+    I --> J["Dense, BM25 and parent ACL checks"]
+    J --> K["Prompt with allowed chunks only"]
+    K --> L["Answer, refusal or safe LLM error"]
+    L --> M["qa_sessions"]
+    L --> N["qa_sources"]
+    M --> O["qa_feedback"]
+    P["Admin API key"] --> Q["Audit, ingestion and index admin APIs"]
+```
+
+`RequestContext` 是企业链路的中心对象，包含 tenant、用户、部门、角色、权限版本和来源。`AUTH_ENABLED=false` 时只用于本地演示；`AUTH_ENABLED=true` 时，普通问答必须有认证上下文，入库、评估、corpus status、审计查询和索引管理必须是管理员上下文。
+
+## 异步索引版本
+
+```mermaid
+flowchart LR
+    A["Admin creates ingestion job"] --> B["Worker builds data/indexes/<version>"]
+    B --> C["Validate Chroma, BM25, parent corpus"]
+    C -->|success| D["Activate version atomically"]
+    C -->|failure| E["Mark job failed, keep old active index"]
+    D --> F["RAG builders read active_version.txt"]
+    F --> G["Cache key includes active index version"]
+```
 
 ## 组件表
 
@@ -79,18 +130,25 @@ flowchart LR
 | Query transform | `app.rag.query_transform` | Query rewrite 和 HyDE | 默认开启，最多 4 个变体 | 按用户、权限、成本和失败率动态开关 |
 | LLM | `app.rag.llm` | 生成最终回答 | OpenAI-compatible chat API | 多模型路由、降级、审核和预算控制 |
 | Cache | `app.rag.cache` | 可选缓存最终答案和引用 | 默认关闭；可用 Redis 或测试内存缓存 | Redis Cluster、按租户/权限/index version 设计 key |
-| Middleware | `app.middleware` | 请求日志和基础耗时 | 结构化文本日志，响应头返回 request id 和耗时 | OpenTelemetry、JSON logs、集中化指标和告警 |
+| Auth/ACL | `app.security` | 请求身份、管理员鉴权、文档权限判断 | 本地 fallback 默认 admin；企业模式启用 API key/WeCom | 企业 SSO/IAM、集中权限服务 |
+| WeCom | `app.integrations.wecom` | 企业微信验签、用户映射、消息处理 | 默认关闭，staging 手动开启 | 企业微信自建应用、统一身份同步 |
+| Audit | `app.audit` | 问答 session、sources、feedback | SQLite | 企业数据库、保留策略、合规查询 |
+| Ingestion jobs | `app.ingestion.jobs` | 异步入库任务、worker、任务状态 | SQLite 任务表 | 队列系统、并发 worker、告警 |
+| Index versions | `app.ingestion.index_versions` | 版本化索引目录和 active 指针 | `data/indexes` | 对象存储/共享卷、备份、保留清理 |
+| Observability | `app.observability`, `app.middleware` | JSON 请求日志、Prometheus 文本指标、基础耗时 | `/metrics` 和 `app.requests` logger | OpenTelemetry、Prometheus/Grafana、集中化日志和告警 |
 | Frontend | `app/web/static` | Demo 操作界面 | FastAPI 静态文件 | 独立前端、鉴权、审计和可观测性 |
 | Evaluation | `app.evaluation`, `scripts.evaluate`, `scripts.evaluate_answers` | 检索质量与 RAGAS 答案质量评估 | JSONL 数据集，输出 JSON 报告 | 定期评测、报告入库、CI 门禁、趋势看板 |
 
 ## 本地开发版与生产版边界
 
-当前仓库已经实现可演示的本地 RAG 闭环，但以下能力应被表述为生产化方向，而不是已验证的生产能力：
+当前仓库已经实现可演示的企业试点链路，但以下能力仍应被表述为生产化方向，而不是已验证的生产 SLA：
 
 - Chroma 是默认本地向量库；Milvus 等服务可作为生产替代方案，但本仓库尚未提供已压测的 Milvus 部署结果。
 - BM25 语料以 JSONL 持久化；生产环境通常应使用 Elasticsearch/OpenSearch 等可扩展检索服务。
-- 父块语料保存在 JSONL；生产环境需要考虑并发读写、版本管理、权限过滤和回滚。
+- 父块语料保存在 JSONL；当前已做权限过滤和索引版本切换，生产仍需并发读写治理和保留清理。
 - Redis 已作为默认关闭的答案缓存抽象和 Compose profile 提供；Nginx、Kubernetes、队列和观测平台属于生产部署增强项。没有实际部署和压测前，不应宣称 QPS、P95 或可用性指标。
+- `/metrics` 是内存指标，适合单进程 staging smoke；多副本生产需要 Prometheus 聚合或外部指标后端。
+- 审计和任务表当前使用 SQLite，适合试点和本地演示；生产应迁移到企业数据库。
 - 回答级质量评估以 RAGAS 为必需流水线，依赖评审 LLM 凭据和网络；没有真实报告前，不应声称具体答案质量分数。
 - 部署和生产可用性边界见 `docs/deployment.md` 与 `docs/production-readiness.md`。
 

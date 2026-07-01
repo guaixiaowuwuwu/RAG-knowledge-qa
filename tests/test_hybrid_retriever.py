@@ -184,6 +184,8 @@ def test_hybrid_retriever_returns_trace_for_debug_metadata():
     assert trace["reranker_scores"][0]["score"] is not None
     assert any(item["status"] == "parent_hydrated" for item in trace["parent_hydration"])
     assert trace["final_chunks"][0]["source"] in {"dense.md", "sparse.md"}
+    assert trace["final_chunks"][0]["stage"] == "final"
+    assert trace["final_chunks"][0]["score"] is not None
 
 
 def test_hybrid_retriever_can_disable_parent_hydration_and_reranker_for_benchmarks():

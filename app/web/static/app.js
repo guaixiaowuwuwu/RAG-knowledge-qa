@@ -7,6 +7,7 @@ import {
   formatInteger,
   formatPercent,
   hitLabel,
+  groupedMetricRows,
   normalizeSources,
   parseSseChunk,
 } from "./ui-utils.js?v=phase10";
@@ -23,6 +24,7 @@ const elements = {
   evaluationState: document.querySelector("#evaluationState"),
   evaluationMetrics: document.querySelector("#evaluationMetrics"),
   evaluationReportMeta: document.querySelector("#evaluationReportMeta"),
+  evaluationGroups: document.querySelector("#evaluationGroups"),
   ragasButton: document.querySelector("#ragasButton"),
   ragasState: document.querySelector("#ragasState"),
   ragasMetrics: document.querySelector("#ragasMetrics"),
@@ -38,6 +40,9 @@ const elements = {
   clearButton: document.querySelector("#clearButton"),
   answerState: document.querySelector("#answerState"),
   answerOutput: document.querySelector("#answerOutput"),
+  feedbackGoodButton: document.querySelector("#feedbackGoodButton"),
+  feedbackBadButton: document.querySelector("#feedbackBadButton"),
+  feedbackState: document.querySelector("#feedbackState"),
   sourceCount: document.querySelector("#sourceCount"),
   sourcesList: document.querySelector("#sourcesList"),
   reportState: document.querySelector("#reportState"),
@@ -68,6 +73,7 @@ const presets = [
 
 let currentController = null;
 let streamHasToken = false;
+let currentSessionId = null;
 
 function setStatus(element, text, mode = "") {
   element.textContent = text;
@@ -126,6 +132,7 @@ function statusCard(value, label, detail = "") {
 
 function renderCorpusStatus(payload) {
   elements.corpusStatusGrid.innerHTML = [
+    statusCard(payload.ready ? "ready" : "pending", "Index state", payload.readiness_reason ?? ""),
     statusCard(formatInteger(payload.document_count), "Documents"),
     statusCard(formatInteger(payload.chunk_count), "Chunks"),
     statusCard(formatInteger(payload.parent_chunk_count), "Parent chunks"),
@@ -151,7 +158,7 @@ function renderCorpusStatus(payload) {
 
   elements.corpusStatusMeta.innerHTML = meta.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
 
-  if (payload.bm25_ready && Number(payload.chroma?.chunk_count) > 0) {
+  if (payload.ready) {
     setStatus(elements.corpusState, "已就绪", "is-ok");
   } else if (payload.document_count > 0) {
     setStatus(elements.corpusState, "待索引", "is-warn");
@@ -219,6 +226,47 @@ function renderEvaluationMetrics(summary) {
   `;
 }
 
+function renderGroupedMetrics(groups) {
+  const rows = groupedMetricRows(groups);
+
+  if (rows.length === 0) {
+    elements.evaluationGroups.innerHTML = '<p class="muted">当前报告没有分组指标。</p>';
+    return;
+  }
+
+  elements.evaluationGroups.innerHTML = `
+    <table class="grouped-metric-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Group</th>
+          <th>Cases</th>
+          <th>Hit@K</th>
+          <th>MRR</th>
+          <th>Neg Reject</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows
+          .map((row) => {
+            const summary = row.summary ?? {};
+            return `
+              <tr>
+                <td>${escapeHtml(row.dimension)}</td>
+                <td>${escapeHtml(row.label)}</td>
+                <td>${escapeHtml(formatInteger(summary.cases))}</td>
+                <td>${escapeHtml(formatPercent(summary.hit_rate_at_k))}</td>
+                <td>${escapeHtml(formatPercent(summary.mrr_at_k))}</td>
+                <td>${escapeHtml(formatPercent(summary.negative_rejection_rate))}</td>
+              </tr>
+            `;
+          })
+          .join("")}
+      </tbody>
+    </table>
+  `;
+}
+
 function renderEvaluationMeta(payload) {
   const parts = [
     payload.variant ? `变体：${payload.variant}` : "",
@@ -281,6 +329,7 @@ async function runEvaluation() {
     }
 
     renderEvaluationMetrics(payload.summary ?? {});
+    renderGroupedMetrics(payload.groups ?? {});
     renderEvaluationMeta(payload);
     renderEvaluationCases(payload.cases);
     setStatus(elements.evaluationState, "完成", "is-ok");
@@ -344,6 +393,24 @@ function renderComparisonReport(payload) {
           .join("")}
       </tbody>
     </table>
+    <div class="comparison-groups">
+      ${rows
+        .map((row) => {
+          const groups = row.groups ?? {};
+          const groupedRows = groupedMetricRows(groups, ["language", "category", "difficulty", "is_negative"]);
+          const preview = groupedRows
+            .slice(0, 4)
+            .map((groupRow) => `${groupRow.dimension}:${groupRow.label}`)
+            .join(" · ");
+          return `
+            <div class="comparison-group-preview">
+              <strong>${escapeHtml(row.variant ?? "unknown")}</strong>
+              <span>${escapeHtml(preview || "no groups")}</span>
+            </div>
+          `;
+        })
+        .join("")}
+    </div>
     <div class="report-meta compact">
       <span>${escapeHtml(payload.report_path ?? "")}</span>
       <span>${escapeHtml(payload.dataset_path ?? "")}</span>
@@ -594,6 +661,58 @@ function renderRetrievalDebug(trace) {
   `;
 }
 
+function setFeedbackState(text, mode = "") {
+  elements.feedbackState.textContent = text;
+  elements.feedbackState.classList.remove("is-ok", "is-error", "is-warn");
+  if (mode) {
+    elements.feedbackState.classList.add(mode);
+  }
+}
+
+function setFeedbackEnabled(enabled) {
+  elements.feedbackGoodButton.disabled = !enabled;
+  elements.feedbackBadButton.disabled = !enabled;
+}
+
+function resetFeedback() {
+  currentSessionId = null;
+  setFeedbackEnabled(false);
+  setFeedbackState("等待审计记录");
+}
+
+async function submitFeedback(rating, tags) {
+  if (!currentSessionId) {
+    setFeedbackState("无可反馈记录", "is-warn");
+    return;
+  }
+
+  setFeedbackEnabled(false);
+  setFeedbackState("提交中");
+
+  try {
+    const response = await fetch("/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        session_id: currentSessionId,
+        rating,
+        tags,
+      }),
+    });
+    const payload = await readJsonResponse(response);
+
+    if (!response.ok) {
+      throw new Error(JSON.stringify(payload));
+    }
+
+    setFeedbackState("已记录", "is-ok");
+  } catch (error) {
+    setFeedbackEnabled(true);
+    setFeedbackState("提交失败", "is-error");
+    console.error(error);
+  }
+}
+
 function handleSseFrame(frame) {
   if (frame.event === "token") {
     if (!streamHasToken) {
@@ -610,6 +729,18 @@ function handleSseFrame(frame) {
       renderSources(JSON.parse(frame.data));
     } catch {
       elements.sourcesList.innerHTML = `<p class="muted">${escapeHtml(frame.data)}</p>`;
+    }
+    return;
+  }
+
+  if (frame.event === "session") {
+    try {
+      const payload = JSON.parse(frame.data);
+      currentSessionId = payload.session_id || null;
+      setFeedbackEnabled(Boolean(currentSessionId));
+      setFeedbackState(currentSessionId ? "可反馈" : "无审计记录", currentSessionId ? "is-ok" : "is-warn");
+    } catch {
+      setFeedbackState("审计记录解析失败", "is-error");
     }
     return;
   }
@@ -655,6 +786,7 @@ async function askStreaming(question, topK) {
   `;
   renderSources([]);
   renderRetrievalDebug(null);
+  resetFeedback();
   setStatus(elements.answerState, "生成中");
 
   try {
@@ -727,6 +859,8 @@ async function askStreaming(question, topK) {
 elements.ingestButton.addEventListener("click", ingestDocuments);
 elements.evaluationButton.addEventListener("click", runEvaluation);
 elements.ragasButton.addEventListener("click", loadRagasReport);
+elements.feedbackGoodButton.addEventListener("click", () => submitFeedback(1, ["helpful"]));
+elements.feedbackBadButton.addEventListener("click", () => submitFeedback(-1, ["not_accurate"]));
 
 elements.presetQuestions.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-question]");
@@ -763,6 +897,7 @@ elements.clearButton.addEventListener("click", () => {
   elements.answerOutput.textContent = "答案会实时显示在这里。";
   renderSources([]);
   renderRetrievalDebug(null);
+  resetFeedback();
   setStatus(elements.answerState, "等待问题");
 });
 

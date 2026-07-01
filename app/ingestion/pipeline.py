@@ -4,6 +4,7 @@ from pathlib import Path
 
 from app.ingestion.chunker import Chunk, chunk_documents, chunk_documents_with_parents
 from app.ingestion.loaders import load_documents_from_dir
+from app.ingestion.manifest import apply_document_manifest
 from app.rag.documents import chunk_id
 from app.rag.parent_store import JsonlParentStore
 
@@ -26,11 +27,21 @@ def ingest_directory(
     parent_corpus_path: Path | None = None,
     parent_chunk_size: int | None = None,
     parent_chunk_overlap: int | None = None,
+    manifest_path: Path | None = None,
+    default_tenant_id: str = "default",
+    document_index_version: str = "local-index-v1",
 ) -> IngestResult:
     load_result = load_documents_from_dir(documents_dir)
+    documents = apply_document_manifest(
+        load_result.documents,
+        manifest_path=manifest_path,
+        documents_dir=documents_dir,
+        default_tenant_id=default_tenant_id,
+        default_document_version=document_index_version,
+    )
     if parent_corpus_path is not None and parent_chunk_size is not None and parent_chunk_overlap is not None:
         parent_child = chunk_documents_with_parents(
-            load_result.documents,
+            documents,
             child_chunk_size=chunk_size,
             child_chunk_overlap=chunk_overlap,
             parent_chunk_size=parent_chunk_size,
@@ -39,7 +50,7 @@ def ingest_directory(
         chunks = parent_child.children
         JsonlParentStore(parent_corpus_path).write(parent_child.parents)
     else:
-        chunks = chunk_documents(load_result.documents, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+        chunks = chunk_documents(documents, chunk_size=chunk_size, chunk_overlap=chunk_overlap)
 
     if reset:
         vector_store.reset()

@@ -1,0 +1,707 @@
+{
+  "dataset_path": "data/eval/sample_eval.jsonl",
+  "top_k": 4,
+  "selection": {
+    "sample": "first",
+    "limit": 10,
+    "include_categories": [],
+    "language": "all",
+    "random_seed": null,
+    "selected_cases": 10
+  },
+  "config": {
+    "embedding_model": "bge-m3",
+    "chat_model": "deepseek-v4-pro",
+    "ragas_judge_source": "business_qa_openai_config",
+    "ragas_embedding_model": "bge-m3",
+    "chroma_dir": "data/chroma",
+    "chroma_collection": "rag_knowledge_base",
+    "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+    "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+    "dense_retrieval_top_k": 20,
+    "bm25_retrieval_top_k": 20,
+    "rrf_k": 60,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_top_n": 5,
+    "parent_chunk_size": 2048,
+    "parent_chunk_overlap": 160,
+    "query_rewrite_enabled": true,
+    "hyde_enabled": true,
+    "max_query_variants": 4,
+    "min_reranker_score": -5.0,
+    "min_final_source_count": 1,
+    "enable_low_confidence_refusal": true,
+    "time_sensitive_refusal_enabled": true,
+    "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+  },
+  "summary": {
+    "cases": 10,
+    "pass_rate": 0.0,
+    "average_keyword_coverage": 0.0,
+    "citation_rate": 0.0,
+    "unknown_answer_rate": 1.0,
+    "negative_case_pass_rate": 0.0
+  },
+  "records": [
+    {
+      "id": "byd_2024_revenue_total",
+      "question": "比亚迪 2024 年年度报告披露的营业额和同比增幅是多少？",
+      "ground_truth": "比亚迪 2024 年营业额约人民币 777,102 百万元，同比增长 29.02%。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "777,102",
+        "百万元",
+        "29.02%"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "777,102",
+          "百万元",
+          "29.02%"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_revenue_segments",
+      "question": "比亚迪 2024 年汽车业务和手机部件业务收入分别是多少？",
+      "ground_truth": "2024 年汽车、汽车相关产品及其他产品业务收入约人民币 617,382 百万元；手机部件、组装及其他产品业务收入约人民币 159,609 百万元。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "617,382",
+        "159,609",
+        "汽车",
+        "手机部件"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "617,382",
+          "159,609",
+          "汽车",
+          "手机部件"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_rd_investment",
+      "question": "比亚迪 2024 年研发投入和累计研发投入是多少？",
+      "ground_truth": "比亚迪 2024 年研发投入约 542 亿元，同比上升 35.68%，累计研发投入超过 1,800 亿元。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "542",
+        "35.68%",
+        "1,800"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "542",
+          "35.68%",
+          "1,800"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_global_coverage",
+      "question": "截至 2024 年底，比亚迪新能源汽车进入了多少大洲和国家地区？",
+      "ground_truth": "截至 2024 年底，比亚迪新能源汽车已进入全球 6 大洲、100 多个国家和地区。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "6 大洲",
+        "100多个",
+        "国家和地区"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf": [
+          21
+        ]
+      },
+      "expected_chunk_keywords": [
+        "6大洲",
+        "100多个国家和地区",
+        "海外市场"
+      ],
+      "category": "exact_fact",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "6 大洲",
+          "100多个",
+          "国家和地区"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_dm_technology",
+      "question": "比亚迪第五代 DM 技术在 2024 年报告中被描述为实现了哪些指标？",
+      "ground_truth": "第五代 DM 技术实现全球量产最高发动机热效率 46.06%、全球最低百公里亏电油耗 2.9L 和全球最长综合续航 2,100 公里。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "46.06%",
+        "2.9L",
+        "2,100"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "46.06%",
+          "2.9L",
+          "2,100"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_sales_milestone",
+      "question": "比亚迪 2024 年在新能源汽车销量和下线里程碑方面有哪些表述？",
+      "ground_truth": "2024 年比亚迪新能源汽车销量同比增长超 40%，蝉联中国汽车市场车企销量冠军、中国汽车市场品牌销量冠军和全球新能源汽车市场销量冠军，并在 11 月成为全球首家达成第 1,000 万辆新能源汽车下线里程碑的车企。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "超40%",
+        "销量冠军",
+        "1,000 万辆"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "summary",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "超40%",
+          "销量冠军",
+          "1,000 万辆"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_industry_china_nev",
+      "question": "比亚迪 2024 年报如何描述中国新能源汽车市场销量？",
+      "ground_truth": "年报称 2024 年中国新能源汽车全年销量达到 1,286.6 万辆，同比增长 35.5%，连续十年位居全球第一。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "1,286.6 万辆",
+        "35.5%",
+        "连续十年"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "1,286.6 万辆",
+          "35.5%",
+          "连续十年"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_business_scope",
+      "question": "比亚迪 2024 年报称公司主要从事哪些业务？",
+      "ground_truth": "比亚迪主要从事以新能源汽车为主的汽车业务、手机部件及组装业务、二次充电电池及光伏业务，并利用技术优势拓展城市轨道交通业务领域。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "新能源汽车",
+        "手机部件",
+        "二次充电电池",
+        "光伏",
+        "城市轨道交通"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "summary",
+      "difficulty": "easy",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "新能源汽车",
+          "手机部件",
+          "二次充电电池",
+          "光伏",
+          "城市轨道交通"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_passenger_vehicle_sales",
+      "question": "比亚迪 2024 年乘用车快报销量是多少？",
+      "ground_truth": "比亚迪 2024 年乘用车快报销量为 4,250,370 辆，同比增长 41.07%。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "4,250,370",
+        "41.07%",
+        "乘用车"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "exact_fact",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "4,250,370",
+          "41.07%",
+          "乘用车"
+        ]
+      }
+    },
+    {
+      "id": "byd_2024_shareholder_return",
+      "question": "比亚迪 2024 年在股东回报和企业社会责任方面提到哪些动作？",
+      "ground_truth": "2024 年比亚迪首次使用自有资金回购 A 股股票并注销，采纳员工持股计划，国内纳税总额约 51,024 百万元，并宣布计划捐资总计 30 亿元用于高校奖学金及新能源技术科普。",
+      "generated_answer": "知识库中没有找到可支持该问题的资料，无法基于现有资料回答。",
+      "expected_answer_keywords": [
+        "回购 A 股",
+        "员工持股计划",
+        "51,024",
+        "30 亿元"
+      ],
+      "expected_sources": [
+        "data/documents/byd_chinese/BYD_2024_annual_report_cn.pdf"
+      ],
+      "expected_pages": {},
+      "expected_chunk_keywords": [],
+      "category": "summary",
+      "difficulty": "medium",
+      "language": "zh",
+      "is_negative": false,
+      "retrieved_contexts": [],
+      "sources": [],
+      "model_config": {
+        "embedding_model": "bge-m3",
+        "chat_model": "deepseek-v4-pro",
+        "ragas_judge_source": "business_qa_openai_config",
+        "ragas_embedding_model": "bge-m3",
+        "chroma_dir": "data/chroma",
+        "chroma_collection": "rag_knowledge_base",
+        "bm25_corpus_path": "data/chroma/bm25_corpus.jsonl",
+        "parent_corpus_path": "data/chroma/parent_corpus.jsonl",
+        "dense_retrieval_top_k": 20,
+        "bm25_retrieval_top_k": 20,
+        "rrf_k": 60,
+        "reranker_model": "BAAI/bge-reranker-v2-m3",
+        "reranker_top_n": 5,
+        "parent_chunk_size": 2048,
+        "parent_chunk_overlap": 160,
+        "query_rewrite_enabled": true,
+        "hyde_enabled": true,
+        "max_query_variants": 4,
+        "min_reranker_score": -5.0,
+        "min_final_source_count": 1,
+        "enable_low_confidence_refusal": true,
+        "time_sensitive_refusal_enabled": true,
+        "answer_eval_generated_at": "2026-06-23T13:42:24.498445"
+      },
+      "metrics": {
+        "keyword_coverage": 0.0,
+        "citation_present": false,
+        "answer_non_empty": true,
+        "unknown_answer": true,
+        "negative_case_pass": null,
+        "passed": false,
+        "matched_keywords": [],
+        "missing_keywords": [
+          "回购 A 股",
+          "员工持股计划",
+          "51,024",
+          "30 亿元"
+        ]
+      }
+    }
+  ],
+  "ragas": {
+    "enabled": true,
+    "required": true,
+    "metrics": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.0,
+      "context_recall": 0.0
+    },
+    "metric_names": [
+      "faithfulness",
+      "answer_relevancy",
+      "context_precision",
+      "context_recall"
+    ],
+    "target_thresholds": {
+      "faithfulness": 0.85,
+      "answer_relevancy": 0.8,
+      "context_precision": 0.75,
+      "context_recall": 0.8
+    },
+    "dataset_schema": [
+      "question",
+      "answer",
+      "contexts",
+      "ground_truth"
+    ],
+    "judge_config": {
+      "base_url": "https://api.deepseek.com",
+      "judge_model": "deepseek-v4-pro",
+      "embedding_model": "bge-m3",
+      "judge_source": "business_qa_openai_config"
+    }
+  }
+}

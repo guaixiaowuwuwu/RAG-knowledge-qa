@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import types
@@ -364,6 +365,118 @@ def test_evaluate_answers_main_ignores_ragas_specific_attributes(monkeypatch, tm
         "judge_model": "business-chat",
         "embedding_model": "bge-m3",
     }
+
+
+def test_select_answer_eval_cases_supports_mixed_category_and_language_sampling():
+    cases = [
+        EvalCase(id="zh-fact", question="q", ground_truth="g", expected_sources=["a"], category="exact_fact", language="zh"),
+        EvalCase(id="en-fact", question="q", ground_truth="g", expected_sources=["a"], category="exact_fact", language="en"),
+        EvalCase(id="en-risk", question="q", ground_truth="g", expected_sources=["a"], category="risk", language="en"),
+        EvalCase(id="en-negative", question="q", ground_truth="g", expected_sources=[], category="negative", language="en", is_negative=True),
+        EvalCase(id="en-policy", question="q", ground_truth="g", expected_sources=["a"], category="policy", language="en"),
+    ]
+
+    selected = evaluate_answers.select_answer_eval_cases(
+        cases,
+        limit=3,
+        sample="mixed",
+        include_categories=["exact_fact", "risk", "negative"],
+        language="en",
+        random_seed=None,
+    )
+
+    assert [case.id for case in selected] == ["en-fact", "en-risk", "en-negative"]
+
+
+def test_evaluate_answers_main_can_skip_ragas_for_local_diagnosis(monkeypatch, tmp_path: Path):
+    output = tmp_path / "answer-eval.json"
+    settings = SimpleNamespace(
+        eval_dataset_path=tmp_path / "eval.jsonl",
+        retrieval_top_k=4,
+        openai_api_key="",
+        openai_base_url="https://answer.example/v1",
+        chat_model="answer-model",
+    )
+    case = EvalCase(
+        id="case-1",
+        question="RAG 是什么？",
+        ground_truth="RAG 包含检索。",
+        expected_sources=["rag.md"],
+        expected_answer_keywords=["检索"],
+        category="exact_fact",
+        language="zh",
+    )
+
+    class FakeService:
+        def answer(self, question, top_k):
+            return Answer(
+                answer="RAG 包含检索。",
+                sources=[Source(source="rag.md", page=None, chunk_index=0, content="RAG 包含检索。")],
+            )
+
+    def fail_ragas(*args, **kwargs):
+        raise AssertionError("RAGAS should be skipped")
+
+    monkeypatch.setattr(evaluate_answers, "get_settings", lambda: settings)
+    monkeypatch.setattr(evaluate_answers, "load_eval_cases", lambda path: [case])
+    monkeypatch.setattr(evaluate_answers, "config_snapshot", lambda settings: {})
+    monkeypatch.setattr(evaluate_answers, "build_rag_service", lambda: FakeService())
+    monkeypatch.setattr(evaluate_answers, "run_ragas_evaluation", fail_ragas)
+
+    evaluate_answers.main(["--output", str(output), "--no-ragas"])
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["summary"]["cases"] == 1
+    assert report["ragas"]["enabled"] is False
+    assert report["ragas"]["required"] is False
+
+
+def test_evaluate_answers_report_config_includes_effective_index_path(monkeypatch, tmp_path: Path):
+    output = tmp_path / "answer-eval.json"
+    settings = SimpleNamespace(
+        eval_dataset_path=tmp_path / "eval.jsonl",
+        retrieval_top_k=4,
+        openai_api_key="",
+        openai_base_url="https://answer.example/v1",
+        chat_model="answer-model",
+        embedding_model="bge-m3",
+        chroma_collection="test",
+        chroma_dir=tmp_path / "legacy" / "chroma",
+        bm25_corpus_path=tmp_path / "legacy" / "bm25.jsonl",
+        parent_corpus_path=tmp_path / "legacy" / "parents.jsonl",
+        index_root_dir=tmp_path / "indexes",
+        active_index_version_path=tmp_path / "indexes" / "active_version.txt",
+        document_index_version="configured",
+        versioned_indexing_enabled=True,
+    )
+    case = EvalCase(
+        id="case-1",
+        question="RAG 是什么？",
+        ground_truth="RAG 包含检索。",
+        expected_sources=["rag.md"],
+        expected_answer_keywords=["检索"],
+    )
+
+    class FakeService:
+        def answer(self, question, top_k):
+            return Answer(
+                answer="RAG 包含检索。",
+                sources=[Source(source="rag.md", page=None, chunk_index=0, content="RAG 包含检索。")],
+            )
+
+    monkeypatch.setattr(evaluate_answers, "get_settings", lambda: settings)
+    monkeypatch.setattr(evaluate_answers, "load_eval_cases", lambda path: [case])
+    monkeypatch.setattr(evaluate_answers, "build_rag_service", lambda: FakeService())
+
+    evaluate_answers.main(["--output", str(output), "--no-ragas"])
+
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["config"]["effective_bm25_corpus_path"] == str(
+        tmp_path / "indexes" / "configured" / "bm25_corpus.jsonl"
+    )
+    assert report["config"]["effective_parent_corpus_path"] == str(
+        tmp_path / "indexes" / "configured" / "parent_corpus.jsonl"
+    )
 
 
 def test_evaluate_answers_main_saves_failure_report_for_generation_error(monkeypatch, tmp_path: Path):

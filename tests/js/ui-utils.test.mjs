@@ -10,6 +10,7 @@ import {
   formatInteger,
   formatBytes,
   formatDateTime,
+  groupedMetricRows,
   basename,
   hitLabel,
 } from "../../app/web/static/ui-utils.js";
@@ -124,4 +125,22 @@ test("hitLabel distinguishes positive and negative cases", () => {
   assert.equal(hitLabel(false, false), "未命中");
   assert.equal(hitLabel(false, true), "正确拒答");
   assert.equal(hitLabel(true, true), "误召回");
+});
+
+test("groupedMetricRows flattens grouped summaries for compact tables", () => {
+  const rows = groupedMetricRows({
+    language: {
+      zh: { cases: 2, hit_rate_at_k: 1, negative_rejection_rate: 0 },
+      en: { cases: 1, hit_rate_at_k: 0.5, negative_rejection_rate: 1 },
+    },
+    is_negative: {
+      false: { cases: 2, hit_rate_at_k: 0.75 },
+    },
+  });
+
+  assert.deepEqual(rows, [
+    { dimension: "language", label: "zh", summary: { cases: 2, hit_rate_at_k: 1, negative_rejection_rate: 0 } },
+    { dimension: "language", label: "en", summary: { cases: 1, hit_rate_at_k: 0.5, negative_rejection_rate: 1 } },
+    { dimension: "is_negative", label: "false", summary: { cases: 2, hit_rate_at_k: 0.75 } },
+  ]);
 });

@@ -25,6 +25,7 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
         hyde_enabled=True,
         max_query_variants=4,
         query_transform_timeout_seconds=8.0,
+        versioned_indexing_enabled=False,
     )
 
     class FakeDenseRetriever:
@@ -65,3 +66,66 @@ def test_build_retriever_uses_required_bge_reranker(monkeypatch):
     assert retriever.parent_store.path == Path("data/chroma/parent_corpus.jsonl")
     assert retriever.query_transformer.max_variants == 4
     assert retriever.query_transformer.timeout_seconds == 8.0
+
+
+def test_build_retriever_uses_active_index_paths(monkeypatch, tmp_path):
+    created = {}
+    index_root = tmp_path / "indexes"
+    active_path = index_root / "active_version.txt"
+    active_path.parent.mkdir(parents=True)
+    active_path.write_text("index-v2\n", encoding="utf-8")
+    settings = SimpleNamespace(
+        chroma_dir=tmp_path / "legacy" / "chroma",
+        chroma_collection="test",
+        embedding_model="bge-m3",
+        openai_api_key="test-key",
+        openai_base_url="https://example.com/v1",
+        chat_model="test-chat",
+        bm25_corpus_path=tmp_path / "legacy" / "bm25.jsonl",
+        parent_corpus_path=tmp_path / "legacy" / "parents.jsonl",
+        reranker_model="BAAI/bge-reranker-v2-m3",
+        dense_retrieval_top_k=20,
+        bm25_retrieval_top_k=20,
+        rrf_k=60,
+        reranker_top_n=5,
+        query_rewrite_enabled=True,
+        hyde_enabled=True,
+        max_query_variants=4,
+        query_transform_timeout_seconds=8.0,
+        index_root_dir=index_root,
+        active_index_version_path=active_path,
+        document_index_version="configured",
+        versioned_indexing_enabled=True,
+    )
+
+    class FakeDenseRetriever:
+        def __init__(self, persist_dir, collection_name, embeddings):
+            created["persist_dir"] = persist_dir
+            created["collection_name"] = collection_name
+
+    class FakeSparseRetriever:
+        @classmethod
+        def from_jsonl(cls, corpus_path):
+            created["corpus_path"] = corpus_path
+            return cls()
+
+    class FakeReranker:
+        pass
+
+    class FakeLLM:
+        def __init__(self, api_key: str, base_url: str, model: str, timeout_seconds: float | None = None):
+            pass
+
+    monkeypatch.setattr(routes, "get_settings", lambda: settings)
+    monkeypatch.setattr(routes, "build_embeddings", lambda settings: object())
+    monkeypatch.setattr(routes, "ChromaVectorStore", FakeDenseRetriever)
+    monkeypatch.setattr(routes, "BM25Retriever", FakeSparseRetriever)
+    monkeypatch.setattr(routes, "build_bge_reranker", lambda model_name: FakeReranker())
+    monkeypatch.setattr(routes, "OpenAIChatLLM", FakeLLM)
+
+    retriever = routes.build_retriever()
+
+    assert isinstance(retriever, HybridRetriever)
+    assert created["persist_dir"] == index_root / "index-v2" / "chroma"
+    assert created["corpus_path"] == index_root / "index-v2" / "bm25_corpus.jsonl"
+    assert retriever.parent_store.path == index_root / "index-v2" / "parent_corpus.jsonl"
